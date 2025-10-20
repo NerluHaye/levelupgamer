@@ -3,6 +3,7 @@ package com.example.levelupgamer.ui
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -50,15 +51,15 @@ fun CartScreen(
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(cartItems) { item ->
                 Card(elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                    Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
                         if (item.product.imageRes != null) {
                             Image(painter = painterResource(id = item.product.imageRes), contentDescription = item.product.nombre, modifier = Modifier.size(64.dp))
                         }
 
                         Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
-                            Text(text = item.product.nombre)
-                            Text(text = "Cantidad: ${item.cantidad}")
-                            Text(text = "Precio: $${item.product.precio}")
+                            Text(text = item.product.nombre, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                            Text(text = "Cantidad: ${item.cantidad}", maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                            Text(text = "Precio: $${item.product.precio}", maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
                         }
 
                         Button(onClick = { productViewModel.removeFromCart(item.product) }) {
