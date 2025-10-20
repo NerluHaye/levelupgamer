@@ -40,4 +40,11 @@ class ProductViewModel(private val repository: ProductRepository) : ViewModel() 
     }
 
     fun getProductById(id: Int): Product? = repository.getProductById(id)
+
+    fun payCart() {
+        viewModelScope.launch {
+            repository.payCart()
+            _cartItems.value = repository.getCart()
+        }
+    }
 }

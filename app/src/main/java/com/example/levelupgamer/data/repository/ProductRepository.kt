@@ -63,4 +63,8 @@ class ProductRepository {
     fun clearCart() {
         cart.clear()
     }
+
+    fun payCart() {
+        cart.clear()
+    }
 }

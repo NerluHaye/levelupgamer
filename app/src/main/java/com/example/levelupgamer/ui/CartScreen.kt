@@ -55,18 +55,47 @@ fun CartScreen(
             return
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize(1f)) {
+        LazyColumn(modifier = Modifier.weight(1f)) {
             items(cartItems) { item ->
-                Card(elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth().padding(8.dp)) {
-                    Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
+                Card(
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
+                    ) {
                         if (item.product.imageRes != null) {
-                            Image(painter = painterResource(id = item.product.imageRes), contentDescription = item.product.nombre, modifier = Modifier.size(64.dp))
+                            Image(
+                                painter = painterResource(id = item.product.imageRes),
+                                contentDescription = item.product.nombre,
+                                modifier = Modifier.size(64.dp)
+                            )
                         }
 
-                        Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
-                            Text(text = item.product.nombre, maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                            Text(text = "Cantidad: ${item.cantidad}", maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
-                            Text(text = "Precio: $${item.product.precio}", maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis)
+                        Column(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(start = 12.dp)
+                        ) {
+                            Text(
+                                text = item.product.nombre,
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            )
+                            Text(
+                                text = "Cantidad: ${item.cantidad}",
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            )
+                            Text(
+                                text = "Precio: $${item.product.precio}",
+                                maxLines = 1,
+                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                            )
                         }
 
                         Button(onClick = { productViewModel.removeFromCart(item.product) }) {
@@ -78,8 +107,18 @@ fun CartScreen(
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(onClick = { productViewModel.clearCart() }, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Vaciar carrito")
+        Row (modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start){
+            // Botón para vaciar el carrito
+            Button(onClick = { productViewModel.clearCart() }, modifier = Modifier.weight(1f)) {
+                Text(text = "Vaciar carrito")
+            }
+            // Botón para proceder al pago (simulado)
+            Button(onClick = { productViewModel.payCart() }, modifier = Modifier.weight(1f).padding(start=8.dp)) {
+                Text(text = "Proceder al pago")
+            }
         }
+
     }
 }
