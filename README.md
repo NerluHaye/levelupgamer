@@ -8,7 +8,7 @@ Nuestro proyecto consiste en el desarrollo de una **aplicación móvil para Andr
 
 - **Alexander Bello** – Diseño visual, navegación y animaciones funcionales.  
 - **Nicolás Jerez** – Lógica de validaciones, gestión de estado y recursos nativos.  
-- **Abraham Neira** – Persistencia local, estructura modular (MVVM) y documentación del proyecto.
+- **Abraham Neira** – Persistencia local, estructura modular (MVVM) y monitoreo.
 
 ## 📱 Funcionalidades del proyecto
 
