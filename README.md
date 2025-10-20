@@ -12,45 +12,45 @@ Nuestro proyecto consiste en el desarrollo de una **aplicación móvil para Andr
 
 ## 📱 Funcionalidades del proyecto
 
-### Interfaz y Navegación
+### Interfaz y Navegación:
 -**Pantalla principal** con acceso a las funciones principales.  
 - **Formulario validado** para agregar gastos con retroalimentación visual (íconos y mensajes de error).  
 
-Validaciones
+### Validaciones:
 - Validaciones lógicas manejadas desde `ViewModel`, separadas de la UI.
 
-Persistencia Local
+### Persistencia Local:
 - Base de datos local implementada con **Room** (DAO, Entity y Repository).  
 - Estructura modular siguiendo el patrón **MVVM**.  
 - Proyecto organizado con carpetas.
 - Control de versiones en **GitHub** y planificación en **Trello**.
 
-Recursos nativos
+### Recursos nativos:
 - **Cámara** integrada para tomar fotos de recibos o productos.
 - **Notificaciones locales** para verificar el agregado al carrito.
 
 ## 📱 Estructura 
 
-Etapa 1 Planificación:
+### Etapa 1 Planificación:
 - Configuración inicial del proyecto en **Android Studio**.
 - Creación del **tablero Trello** con planificación por semanas. 
 - Creación del **repositorio GitHub** con commits iniciales y archivo README.md.
 
-Etapa 2 Diseño de Interfaz y Navegación:
+### Etapa 2 Diseño de Interfaz y Navegación:
 - Creación de pantallas principales: `PantallaPrincipal.kt`.
 - Validación visual de formularios con mensajes de error y íconos de retroalimentación.  
 
-Etapa 3 Validación: 
+### Etapa 3 Validación: 
 - Implementación de validaciones desde el **ViewModel**, separando la lógica de la vista.
 - Manejo de flujo entre ingreso, validación y almacenamiento de datos.
 
-Etapa 4 Persistencia Local y Arquitectura:
+### Etapa 4 Persistencia Local y Arquitectura:
 - Implementación del patrón **MVVM** para mantener la aplicación modular y mantenible.  
 - Creación del `ExpenseRepository.kt` para manejar la comunicación entre ViewModel y base de datos.  
 - Organización clara de carpetas (`model`, `repository`, `viewmodel`, `ui`).  
 - Seguimiento colaborativo en **GitHub y Trello**.
 
-Etapa 5 Recursos Nativos y Animaciones:
+### Etapa 5 Recursos Nativos y Animaciones:
 - Pruebas completas de navegación, persistencia y animaciones.  
 - Validación del funcionamiento de los recursos nativos en emulador o dispositivo real.
 
