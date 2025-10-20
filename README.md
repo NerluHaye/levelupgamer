@@ -41,7 +41,7 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 - Creación del **repositorio GitHub** con commits iniciales y archivo README.md.
 
 ### Etapa 2 Diseño de Interfaz y Navegación:
-- Creación de pantallas principales: `CartScreen.kt`, `ProductDetailScreen.kt`, `ProductListScreen.kt` .
+- Creación de pantallas principales: `CartScreen.kt`, `ProductDetailScreen.kt`, `ProductListScreen.kt`.
 - Validación visual de formularios con mensajes de error.  
 
 ### Etapa 3 Validación: 
