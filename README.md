@@ -13,7 +13,7 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 ## 📱 Funcionalidades del proyecto
 
 ### Interfaz y Navegación:
--**Pantalla principal** con acceso a las funciones principales.  
+- **Pantalla principal** con acceso a las funciones principales.  
 - **Formulario validado** para agregar gastos con retroalimentación visual (íconos y mensajes de error).  
 
 ### Validaciones:
