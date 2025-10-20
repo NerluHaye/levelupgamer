@@ -1,3 +1,6 @@
+![Imagen de WhatsApp 2025-10-20 a las 01 53 22_82a96099](https://github.com/user-attachments/assets/cde4492e-e0e3-43b4-9cce-0cffdf122bfc)
+
+
 # LevelUp Gamer — Control de Gastos para Gamers 🎮
 
 ## 📱 Descripción
