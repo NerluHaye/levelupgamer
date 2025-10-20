@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,7 +23,9 @@ import com.example.levelupgamer.ui.CartScreen
 import com.example.levelupgamer.ui.LoginScreen
 import com.example.levelupgamer.ui.ProductDetailScreen
 import com.example.levelupgamer.ui.ProductListScreen
+import com.example.levelupgamer.ui.RegisterScreen
 import com.example.levelupgamer.ui.theme.LevelUpGamerTheme
+import com.example.levelupgamer.viewmodel.LoginViewModel
 import com.example.levelupgamer.viewmodel.ProductViewModel
 import com.example.levelupgamer.viewmodel.ProductViewModelFactory
 
@@ -33,6 +34,7 @@ sealed class Screen {
     data class Detail(val productId: Int) : Screen()
     object Cart : Screen()
     object Login : Screen()
+    object Register : Screen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -46,16 +48,7 @@ class MainActivity : ComponentActivity() {
                 val productViewModel: ProductViewModel =
                     viewModel(factory = ProductViewModelFactory(repository))
 
-                var screen by remember { mutableStateOf<Screen?>(Screen.List) }
-
-                val onBackClick = {
-                    screen = when (screen) {
-                        is Detail -> Screen.List
-                        is Cart -> Screen.List
-                        is Login -> Screen.List
-                        else -> null
-                    }
-                }
+                var screen by remember { mutableStateOf<Screen>(Screen.List) }
 
                 Scaffold (
                     containerColor = MaterialTheme.colorScheme.background,
@@ -81,7 +74,7 @@ class MainActivity : ComponentActivity() {
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         when (val currentScreen = screen) {
-                            is Screen.List, null -> {
+                            is Screen.List-> {
                                 ProductListScreen(
                                     productViewModel = productViewModel,
                                     onOpenDetail = { productId ->
@@ -101,7 +94,7 @@ class MainActivity : ComponentActivity() {
                                         screen = Screen.List
                                     },
                                     onOpenCart = {
-                                        screen = Screen.Cart
+                                        screen = Cart
                                     }
                                 )
                             }
@@ -116,10 +109,23 @@ class MainActivity : ComponentActivity() {
                             }
 
                             is Screen.Login -> {
-                                // Placeholder for Login Screen
                                 LoginScreen(
-                                    onBack = {
+                                    onLoginSuccess = {
                                         screen = Screen.List
+                                    },
+                                    onRegisterClick = {
+                                        screen = Screen.Register
+                                    }
+                                )
+                            }
+
+                            is Screen.Register -> {
+                                RegisterScreen(
+                                    onBack = {
+                                        screen = Screen.Login
+                                    },
+                                    onRegisterSuccess = {
+                                        screen = Screen.Login
                                     }
                                 )
                             }
