@@ -1,18 +1,18 @@
-📱 LevelUp Gamer — Control de Gastos para Gamers 🎮
+# LevelUp Gamer — Control de Gastos para Gamers 🎮
 
-🧩 Descripción
+## 📱 Descripción
 
 Nuestro proyecto consiste en el desarrollo de una **aplicación móvil para Android**, creada en **Kotlin con Jetpack Compose**, cuyo objetivo es **registrar, visualizar y gestionar gastos personales de un gamer**. La aplicación busca ofrecer una experiencia fluida y moderna, integrando **principios de diseño visual, validaciones lógicas, persistencia local y acceso a recursos nativos del dispositivo**.
 
-🧩 Colaboradores 
+## 📱 Colaboradores 
 
 - **Alexander Bello** – Diseño visual, navegación y animaciones funcionales.  
 - **Nicolás Jerez** – Lógica de validaciones, gestión de estado y recursos nativos.  
 - **Abraham Neira** – Persistencia local, estructura modular (MVVM) y documentación del proyecto.
 
-🧩 Funcionalidades del proyecto
+## 📱 Funcionalidades del proyecto
 
-Interfaz y Navegación
+### Interfaz y Navegación
 -**Pantalla principal** con acceso a las funciones principales.  
 - **Formulario validado** para agregar gastos con retroalimentación visual (íconos y mensajes de error).  
 
@@ -29,7 +29,7 @@ Recursos nativos
 - **Cámara** integrada para tomar fotos de recibos o productos.
 - **Notificaciones locales** para verificar el agregado al carrito.
 
-🧩 Estructura 
+## 📱 Estructura 
 
 Etapa 1 Planificación:
 - Configuración inicial del proyecto en **Android Studio**.
@@ -54,5 +54,13 @@ Etapa 5 Recursos Nativos y Animaciones:
 - Pruebas completas de navegación, persistencia y animaciones.  
 - Validación del funcionamiento de los recursos nativos en emulador o dispositivo real.
 
-📱 Como equipo, nuestro objetivo es desarrollar **una aplicación móvil funcional y completa**, que refleje un proceso de diseño y programación coherente con los aprendizajes de la asignatura.  
+## 📱 Obejtivo del proyecto
+
+Como equipo, nuestro objetivo es desarrollar **una aplicación móvil funcional y completa**, que refleje un proceso de diseño y programación coherente con los aprendizajes de la asignatura.  
 Buscamos construir una app **modular, visualmente coherente y usable**.
+
+## 📱 Pasos para Ejecutar el Proyecto
+
+1. Clonar el repositorio desde GitHub:  
+   ```bash
+   git clone https://github.com/tuusuario/levelupgamer.git
