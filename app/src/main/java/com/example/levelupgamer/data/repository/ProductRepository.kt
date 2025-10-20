@@ -1,5 +1,6 @@
 package com.example.levelupgamer.data.repository
 
+import com.example.levelupgamer.model.CartItem
 import com.example.levelupgamer.model.Product
 
 import com.example.levelupgamer.R
@@ -34,7 +35,32 @@ class ProductRepository {
         Product(24, "Shogi", 59990, "Juegos", "Juego de mesa Japones Shogi", R.drawable.shogi)
     )
 
-    fun getAllProducts(): List<Product> = products
+    // Carrito en memoria simple
+    private val cart = mutableListOf<CartItem>()
+
+    fun getProducts(): List<Product> = products
 
     fun getProductById(id: Int): Product? = products.find { it.id == id }
+
+    fun getCart(): List<CartItem> = cart.map { it.copy() }
+
+    fun addToCart(product: Product, cantidad: Int = 1) {
+        val existing = cart.find { it.product.id == product.id }
+        if (existing != null) {
+            existing.cantidad += cantidad
+        } else {
+            cart.add(CartItem(product, cantidad))
+        }
+    }
+
+    fun removeFromCart(product: Product) {
+        val existing = cart.find { it.product.id == product.id }
+        if (existing != null) {
+            cart.remove(existing)
+        }
+    }
+
+    fun clearCart() {
+        cart.clear()
+    }
 }

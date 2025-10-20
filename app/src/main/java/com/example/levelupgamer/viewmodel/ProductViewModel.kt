@@ -1,30 +1,43 @@
 package com.example.levelupgamer.viewmodel
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.levelupgamer.data.repository.ProductRepository
 import com.example.levelupgamer.model.CartItem
 import com.example.levelupgamer.model.Product
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 class ProductViewModel(private val repository: ProductRepository) : ViewModel() {
 
-    val products: List<Product> = repository.getProducts()
-    private val _cartItems = MutableLiveData<List<CartItem>>(repository.getCart())
-    val cartItems: LiveData<List<CartItem>> = _cartItems
+    private val _products = MutableStateFlow<List<Product>>(repository.getProducts())
+    val products: StateFlow<List<Product>> = _products.asStateFlow()
+
+    private val _cartItems = MutableStateFlow<List<CartItem>>(repository.getCart())
+    val cartItems: StateFlow<List<CartItem>> = _cartItems.asStateFlow()
 
     fun addToCart(product: Product, cantidad: Int = 1) {
-        repository.addToCart(product, cantidad)
-        _cartItems.value = repository.getCart()
+        viewModelScope.launch {
+            repository.addToCart(product, cantidad)
+            _cartItems.value = repository.getCart()
+        }
     }
 
     fun removeFromCart(product: Product) {
-        repository.removeFromCart(product)
-        _cartItems.value = repository.getCart()
+        viewModelScope.launch {
+            repository.removeFromCart(product)
+            _cartItems.value = repository.getCart()
+        }
     }
 
     fun clearCart() {
-        repository.clearCart()
-        _cartItems.value = repository.getCart()
+        viewModelScope.launch {
+            repository.clearCart()
+            _cartItems.value = repository.getCart()
+        }
     }
+
+    fun getProductById(id: Int): Product? = repository.getProductById(id)
 }
