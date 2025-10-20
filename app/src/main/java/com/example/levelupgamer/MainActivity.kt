@@ -21,6 +21,7 @@ import com.example.levelupgamer.Screen.*
 import com.example.levelupgamer.data.repository.ProductRepository
 import com.example.levelupgamer.ui.CartScreen
 import com.example.levelupgamer.ui.LoginScreen
+import com.example.levelupgamer.ui.PaymentScreen
 import com.example.levelupgamer.ui.ProductDetailScreen
 import com.example.levelupgamer.ui.ProductListScreen
 import com.example.levelupgamer.ui.RegisterScreen
@@ -35,6 +36,7 @@ sealed class Screen {
     object Cart : Screen()
     object Login : Screen()
     object Register : Screen()
+    object Payment : Screen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -104,7 +106,8 @@ class MainActivity : ComponentActivity() {
                                     productViewModel = productViewModel,
                                     onBack = {
                                         screen = Screen.List
-                                    }
+                                    },
+                                    onProceedToPayment = { screen = Screen.Payment}
                                 )
                             }
 
@@ -126,6 +129,19 @@ class MainActivity : ComponentActivity() {
                                     },
                                     onRegisterSuccess = {
                                         screen = Screen.Login
+                                    }
+                                )
+                            }
+
+                            is Screen.Payment -> {
+                                PaymentScreen(
+                                    totalAmount = productViewModel.cartItems.collectAsState().value.sumOf { it.product.precio * it.cantidad }.toDouble(),
+                                    onBack = {
+                                        screen = Screen.Cart
+                                    },
+                                    onPaymentSuccess = {
+                                        productViewModel.clearCart()
+                                        screen = Screen.List
                                     }
                                 )
                             }

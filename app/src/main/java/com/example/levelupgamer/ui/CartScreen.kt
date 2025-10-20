@@ -19,12 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.levelupgamer.Screen
 import com.example.levelupgamer.viewmodel.ProductViewModel
 
 @Composable
 fun CartScreen(
     productViewModel: ProductViewModel,
     onBack: () -> Unit,
+    onProceedToPayment: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val cartItems by productViewModel.cartItems.collectAsState()
@@ -111,11 +113,11 @@ fun CartScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Start){
             // Botón para vaciar el carrito
-            Button(onClick = { productViewModel.clearCart() }, modifier = Modifier.weight(1f)) {
+            Button(onClick = { productViewModel.clearCart() }, modifier = Modifier.weight(1f).padding(8.dp)) {
                 Text(text = "Vaciar carrito")
             }
             // Botón para proceder al pago (simulado)
-            Button(onClick = { productViewModel.payCart() }, modifier = Modifier.weight(1f).padding(start=8.dp)) {
+            Button(onClick = onProceedToPayment, modifier = Modifier.weight(1f).padding(8.dp)) {
                 Text(text = "Proceder al pago")
             }
         }
