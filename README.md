@@ -12,23 +12,22 @@ Nuestro proyecto consiste en el desarrollo de una **aplicación móvil para Andr
 
 🧩 Funcionalidades del proyecto
 
-# Interfaz y Navegación
+Interfaz y Navegación
 -**Pantalla principal** con acceso a las funciones principales.  
 - **Formulario validado** para agregar gastos con retroalimentación visual (íconos y mensajes de error).  
 
-# Validaciones
+Validaciones
 - Validaciones lógicas manejadas desde `ViewModel`, separadas de la UI.
 
-# Persistencia Local
+Persistencia Local
 - Base de datos local implementada con **Room** (DAO, Entity y Repository).  
 - Estructura modular siguiendo el patrón **MVVM**.  
 - Proyecto organizado con carpetas.
 - Control de versiones en **GitHub** y planificación en **Trello**.
 
-# Recursos nativos
+Recursos nativos
 - **Cámara** integrada para tomar fotos de recibos o productos.
 - **Notificaciones locales** para verificar el agregado al carrito.
-
 
 🧩 Estructura 
 
