@@ -30,6 +30,12 @@ class LoginViewModel(private val repository: AuthRepository) : ViewModel() {
     }
 
     fun login() {
+        // Validar campos
+        if (_email.value.isBlank() || _password.value.isBlank()) {
+            _loginState.value = Result.Error("Email y contraseña son obligatorios")
+            return
+        }
+
         viewModelScope.launch {
             _loginState.value = Result.Loading
             val result = repository.login(_email.value, _password.value)

@@ -36,6 +36,12 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
     }
 
     fun register() {
+        // Validar campos
+        if (_username.value.isBlank() || _email.value.isBlank() || _password.value.isBlank()) {
+            _registerState.value = Result.Error("Todos los campos son obligatorios")
+            return
+        }
+
         val user = User(
             username = _username.value,
             email = _email.value,
