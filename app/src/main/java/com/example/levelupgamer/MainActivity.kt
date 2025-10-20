@@ -1,19 +1,27 @@
 package com.example.levelupgamer
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.levelupgamer.Screen.*
 import com.example.levelupgamer.data.repository.ProductRepository
 import com.example.levelupgamer.ui.CartScreen
+import com.example.levelupgamer.ui.LoginScreen
 import com.example.levelupgamer.ui.ProductDetailScreen
 import com.example.levelupgamer.ui.ProductListScreen
 import com.example.levelupgamer.ui.theme.LevelUpGamerTheme
@@ -24,9 +32,11 @@ sealed class Screen {
     object List : Screen()
     data class Detail(val productId: Int) : Screen()
     object Cart : Screen()
+    object Login : Screen()
 }
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -38,8 +48,36 @@ class MainActivity : ComponentActivity() {
 
                 var screen by remember { mutableStateOf<Screen?>(Screen.List) }
 
+                val onBackClick = {
+                    screen = when (screen) {
+                        is Detail -> Screen.List
+                        is Cart -> Screen.List
+                        is Login -> Screen.List
+                        else -> null
+                    }
+                }
+
                 Scaffold (
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = MaterialTheme.colorScheme.background,
+                    topBar = {
+                        TopAppBar(
+                            title = {
+                                Text(text = "Level Up Gamer")
+                            },
+                            actions = {
+                                //Icono de carrito
+                                IconButton(onClick = { screen = Screen.Cart }) {
+                                    Icon(imageVector = androidx.compose.material.icons.Icons.Default.ShoppingCart, contentDescription = "Carrito")
+                                }
+                                //Icono de user
+                                IconButton(onClick = { screen = Screen.Login }) {
+                                    Icon(imageVector = androidx.compose.material.icons.Icons.Default.AccountCircle, contentDescription = "Login")
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(
+                            )
+                        )
+                    }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         when (val currentScreen = screen) {
@@ -47,7 +85,7 @@ class MainActivity : ComponentActivity() {
                                 ProductListScreen(
                                     productViewModel = productViewModel,
                                     onOpenDetail = { productId ->
-                                        screen = Screen.Detail(productId)
+                                        screen = Detail(productId)
                                     },
                                     onOpenCart = {
                                         screen = Screen.Cart
@@ -76,25 +114,19 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
+
+                            is Screen.Login -> {
+                                // Placeholder for Login Screen
+                                LoginScreen(
+                                    onBack = {
+                                        screen = Screen.List
+                                    }
+                                )
+                            }
                         }
                     }
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainPreview() {
-    LevelUpGamerTheme{
-        val repository = remember { ProductRepository() }
-        val productViewModel: ProductViewModel = viewModel(factory = ProductViewModelFactory(repository))
-
-        ProductListScreen(
-            productViewModel = productViewModel,
-            onOpenDetail = {},
-            onOpenCart = {}
-        )
     }
 }

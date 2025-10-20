@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.levelupgamer.viewmodel.ProductViewModel
 
 @Composable
@@ -35,8 +36,14 @@ fun CartScreen(
     Column(modifier = modifier.fillMaxSize().padding(12.dp)) {
         // Header
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "Carrito", modifier = Modifier.weight(1f))
             Button(onClick = onBack) { Text("Volver") }
+
+            val totalPrice = cartItems.sumOf { it.product.precio * it.cantidad }
+            Text(text = "Total: $${totalPrice}",
+                fontSize = 24.sp,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = androidx.compose.ui.text.style.TextAlign.End
+            )
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -48,7 +55,7 @@ fun CartScreen(
             return
         }
 
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.fillMaxSize(1f)) {
             items(cartItems) { item ->
                 Card(elevation = CardDefaults.cardElevation(defaultElevation = 4.dp), modifier = Modifier.fillMaxWidth().padding(8.dp)) {
                     Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
@@ -69,7 +76,6 @@ fun CartScreen(
                 }
             }
         }
-
         Spacer(modifier = Modifier.height(8.dp))
 
         Button(onClick = { productViewModel.clearCart() }, modifier = Modifier.fillMaxWidth()) {
