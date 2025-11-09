@@ -70,6 +70,7 @@ fun Register(
         Spacer(modifier = Modifier.height(8.dp))
         PasswordFieldR(password) { viewModel.onPasswordChange(it) }
         Spacer(modifier = Modifier.height(16.dp))
+
         RegisterButton {
             viewModel.register()
         }

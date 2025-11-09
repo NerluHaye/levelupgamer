@@ -103,6 +103,7 @@ fun CartScreen(
                         Button(onClick = { productViewModel.removeFromCart(item.product) }) {
                             Text(text = "Eliminar")
                         }
+
                     }
                 }
             }
