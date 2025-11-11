@@ -4,8 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -29,6 +31,7 @@ import com.example.levelupgamer.ui.theme.LevelUpGamerTheme
 import com.example.levelupgamer.viewmodel.LoginViewModel
 import com.example.levelupgamer.viewmodel.ProductViewModel
 import com.example.levelupgamer.viewmodel.ProductViewModelFactory
+import com.example.levelupgamer.ui.BlogScreen
 
 sealed class Screen {
     object List : Screen()
@@ -37,6 +40,7 @@ sealed class Screen {
     object Login : Screen()
     object Register : Screen()
     object Payment : Screen()
+    object Blog : Screen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -57,7 +61,12 @@ class MainActivity : ComponentActivity() {
                     topBar = {
                         TopAppBar(
                             title = {
-                                Text(text = "Level Up Gamer")
+                                Text (
+                                    text = "Level Up Gamer",
+                                    modifier = Modifier.clickable {
+                                        screen = Screen.List
+                                    }
+                                )
                             },
                             actions = {
                                 //Icono de carrito
@@ -67,6 +76,10 @@ class MainActivity : ComponentActivity() {
                                 //Icono de user
                                 IconButton(onClick = { screen = Screen.Login }) {
                                     Icon(imageVector = androidx.compose.material.icons.Icons.Default.AccountCircle, contentDescription = "Login")
+                                }
+                                //Icono de blog
+                                IconButton(onClick = { screen = Screen.Blog }) {
+                                    Icon(imageVector = androidx.compose.material.icons.Icons.Default.Menu, contentDescription = "Blog")
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(
@@ -147,8 +160,14 @@ class MainActivity : ComponentActivity() {
                                     }
                                 )
                             }
+                            is Screen.Blog -> {
+                                BlogScreen(
+                                    onBack = { screen = Screen.List }
+                                )
+                            }
                         }
                     }
+
                 }
             }
         }

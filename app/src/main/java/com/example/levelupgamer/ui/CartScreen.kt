@@ -18,18 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.levelupgamer.Screen
 import com.example.levelupgamer.viewmodel.ProductViewModel
-import com.example.levelupgamer.data.util.generarComprobantePDF
-import androidx.compose.ui.platform.LocalContext
-import android.content.Intent
-import android.net.Uri
-import androidx.core.content.FileProvider
-import java.io.File
-import java.io.FileOutputStream
-import android.os.Environment
-import android.graphics.pdf.PdfDocument
-import android.content.Context
+
 
 
 
