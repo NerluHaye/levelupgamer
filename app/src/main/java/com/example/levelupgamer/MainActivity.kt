@@ -192,6 +192,7 @@ class MainActivity : ComponentActivity() {
                                     onBack = { screen = Screen.List },
                                     onLogout = {
                                         loginViewModel.logout()
+                                        isLoggedIn = 0
                                         screen = Screen.List
                                     }
                                 )
