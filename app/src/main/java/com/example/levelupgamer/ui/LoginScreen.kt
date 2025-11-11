@@ -1,6 +1,8 @@
 package com.example.levelupgamer.ui
 
+import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -8,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -19,8 +22,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.levelupgamer.R
 import com.example.levelupgamer.data.local.AppDatabase
 import com.example.levelupgamer.data.repository.AuthRepository
-import com.example.levelupgamer.viewmodel.LoginViewModel
 import com.example.levelupgamer.data.util.Result
+import com.example.levelupgamer.viewmodel.LoginViewModel
 import com.example.levelupgamer.viewmodel.LoginViewModelFactory
 
 @Composable
@@ -34,8 +37,9 @@ fun LoginScreen(
     val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(repository))
 
     Box(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFF1F2937)) // fondo gris azulado
             .padding(16.dp)
     ) {
         Login(
@@ -54,104 +58,92 @@ fun Login(
     onRegisterClick: () -> Unit,
     onLoginSuccess: () -> Unit
 ) {
-    val email by loginViewModel.email.collectAsState()
-    val password by loginViewModel.password.collectAsState()
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
     val loginState by loginViewModel.loginState.collectAsState()
 
     Column(modifier = modifier) {
         HeaderImage(Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.height(16.dp))
-        EmailField(email) { loginViewModel.onEmailChange(it) }
+
+        // Email
+        OutlinedTextField(
+            value = email,
+            onValueChange = {
+                email = it
+                loginViewModel.onEmailChange(it)
+            },
+            placeholder = { Text(text = "Email", color = Color.Gray) },
+            modifier = Modifier
+                .fillMaxWidth(), // gris más oscuro dentro del campo
+
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        PasswordField(password) { loginViewModel.onPasswordChange(it) }
-        Spacer(modifier = Modifier.height(8.dp))
-        Registrarse(onRegisterClick)
-        Spacer(modifier = Modifier.height(8.dp))
-        ForgotPassword(Modifier.align(Alignment.End))
+
+        // Password
+        OutlinedTextField(
+            value = password,
+            onValueChange = {
+                password = it
+                loginViewModel.onPasswordChange(it)
+            },
+            placeholder = { Text(text = "Contraseña", color = Color.Gray) },
+            modifier = Modifier
+                .fillMaxWidth(),
+
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        LoginButton() {
-            loginViewModel.login()
+
+        // Botón Login
+        Button(
+            onClick = { loginViewModel.login() },
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF22C55E)),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp)
+        ) {
+            Text("Iniciar Sesión", color = Color.White)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
+        // Registro
+        Text(
+            text = "¿No tienes cuenta? Registrarse",
+            modifier = Modifier
+                .clickable { onRegisterClick() }
+                .padding(4.dp),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF22C55E)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Estado login
         loginState?.let { state ->
             when(state) {
-                is Result.Loading -> Text("Iniciando sesión...", fontSize = 14.sp)
+                is Result.Loading -> Text("Iniciando sesión...", color = Color.White)
                 is Result.Success -> {
                     onLoginSuccess()
                     loginViewModel.resetState()
                 }
-                is Result.Error -> Text("${state.message}", color = MaterialTheme.colorScheme.error)
+                is Result.Error -> Text(state.message, color = MaterialTheme.colorScheme.error)
             }
         }
     }
 }
 
 @Composable
-fun Registrarse(onRegisterClick: () -> Unit) {
-    Text(
-        text = "¿No tienes una cuenta? Registrarse",
-        modifier = Modifier.clickable { onRegisterClick() },
-        fontSize = 12.sp,
-        fontWeight = FontWeight.Bold
-    )
-}
-
-@Composable
-fun LoginButton(onLoginClick: () -> Unit) {
-    Button(
-        onClick = onLoginClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-    ) {
-        Text(text = "Iniciar Sesión")
-    }
-}
-
-@Composable
-fun ForgotPassword(modifier: Modifier) {
-    Text(
-        text = "Olvidé mi contraseña",
-        modifier = modifier.clickable { },
-        fontSize = 12.sp,
-        fontWeight = FontWeight.Bold
-    )
-}
-
-@Composable
-fun PasswordField(value: String, onValueChange: (String) -> Unit) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Contraseña") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        visualTransformation = PasswordVisualTransformation(),
-        singleLine = true,
-        maxLines = 1
-    )
-}
-
-@Composable
-fun EmailField(value: String, onValueChange: (String) -> Unit) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(text = "Email") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        singleLine = true,
-        maxLines = 1
-    )
-}
-
-@Composable
 fun HeaderImage(modifier: Modifier) {
     Image(
         painter = painterResource(id = R.drawable.logolevelupgamer),
-        contentDescription = "LoginHeader",
+        contentDescription = "Login Header",
         modifier = modifier
     )
 }

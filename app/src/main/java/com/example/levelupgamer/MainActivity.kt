@@ -4,37 +4,27 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.levelupgamer.Screen.*
+import com.example.levelupgamer.data.local.AppDatabase
+import com.example.levelupgamer.data.repository.AuthRepository
 import com.example.levelupgamer.data.repository.ProductRepository
-import com.example.levelupgamer.ui.CartScreen
-import com.example.levelupgamer.ui.LoginScreen
-import com.example.levelupgamer.ui.PaymentScreen
-import com.example.levelupgamer.ui.ProductDetailScreen
-import com.example.levelupgamer.ui.ProductListScreen
-import com.example.levelupgamer.ui.RegisterScreen
+import com.example.levelupgamer.ui.*
 import com.example.levelupgamer.ui.theme.LevelUpGamerTheme
 import com.example.levelupgamer.viewmodel.LoginViewModel
+import com.example.levelupgamer.viewmodel.LoginViewModelFactory
 import com.example.levelupgamer.viewmodel.ProductViewModel
 import com.example.levelupgamer.viewmodel.ProductViewModelFactory
-import com.example.levelupgamer.ui.BlogScreen
-import androidx.compose.ui.unit.dp
-import com.example.levelupgamer.ui.NosotrosScreen
-
 
 sealed class Screen {
     object List : Screen()
@@ -45,6 +35,7 @@ sealed class Screen {
     object Payment : Screen()
     object Blog : Screen()
     object Nosotros : Screen()
+    object Profile : Screen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -57,123 +48,132 @@ class MainActivity : ComponentActivity() {
                 val repository = remember { ProductRepository() }
                 val productViewModel: ProductViewModel =
                     viewModel(factory = ProductViewModelFactory(repository))
+                val authRepository = remember { //recordar que se cambiara esto una vez se conecte al backend
+                    AuthRepository(
+                        AppDatabase.getDatabase(this).userDao()
+                    )
+                }
+                val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(
+                    authRepository
+                )
+                )
 
                 var screen by remember { mutableStateOf<Screen>(Screen.List) }
+                var isLoggedIn by remember { mutableStateOf(0) }
 
-                Scaffold (
-                    containerColor = MaterialTheme.colorScheme.background,
+                // Gris azulado claro como fondo unificado
+                val backgroundColor = Color(0xFF1F2937) // gris azulado medio
+                val barColor = Color(0xFF18202D)
+
+                Scaffold(
+                    containerColor = backgroundColor,
                     topBar = {
                         TopAppBar(
                             title = {
-                                Text (
+                                Text(
                                     text = "Level Up Gamer",
-                                    modifier = Modifier.clickable {
-                                        screen = Screen.List
-                                    }
+                                    color = Color.White,
+                                    modifier = Modifier.clickable { screen = Screen.List }
                                 )
                             },
                             actions = {
-                                //Icono de carrito
                                 IconButton(onClick = { screen = Screen.Cart }) {
-                                    Icon(imageVector = androidx.compose.material.icons.Icons.Default.ShoppingCart, contentDescription = "Carrito")
+                                    Icon(
+                                        imageVector = androidx.compose.material.icons.Icons.Default.ShoppingCart,
+                                        contentDescription = "Carrito",
+                                        tint = Color.White
+                                    )
                                 }
-                                //Icono de user
-                                IconButton(onClick = { screen = Screen.Login }) {
-                                    Icon(imageVector = androidx.compose.material.icons.Icons.Default.AccountCircle, contentDescription = "Login")
+                                IconButton(onClick = {
+                                    if (isLoggedIn == 1) {
+                                        screen = Screen.Profile // nueva pantalla
+                                    } else {
+                                        screen = Screen.Login
+                                    }
+                                }) {
+                                    Icon(imageVector = androidx.compose.material.icons.Icons.Default.AccountCircle, contentDescription = "Usuario")
                                 }
-                                //Icono de blog
                                 IconButton(onClick = { screen = Screen.Blog }) {
-                                    Icon(imageVector = androidx.compose.material.icons.Icons.Default.Menu, contentDescription = "Blog")
+                                    Icon(
+                                        imageVector = androidx.compose.material.icons.Icons.Default.Menu,
+                                        contentDescription = "Blog",
+                                        tint = Color.White
+                                    )
                                 }
                             },
-                            modifier = Modifier.fillMaxWidth(
-                            )
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = barColor
+                            ),
+                            modifier = Modifier.fillMaxWidth()
                         )
                     },
                     bottomBar = {
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .background(barColor)
                                 .padding(12.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = "Telefono: +56 9 1234 5678")
+                            Text(text = "Tel: +56 9 1234 5678", color = Color.White)
                             Text(
                                 text = "Sobre Nosotros",
-                                color = MaterialTheme.colorScheme.primary,
+                                color = Color.White,
                                 modifier = Modifier.clickable { screen = Screen.Nosotros }
                             )
                         }
-
                     }
                 ) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
+                    Box(
+                        modifier = Modifier
+                            .padding(innerPadding)
+                            .fillMaxSize()
+                            .background(backgroundColor)
+                    ) {
                         when (val currentScreen = screen) {
-                            is Screen.List-> {
+                            is Screen.List -> {
                                 ProductListScreen(
                                     productViewModel = productViewModel,
-                                    onOpenDetail = { productId ->
-                                        screen = Detail(productId)
-                                    },
-                                    onOpenCart = {
-                                        screen = Screen.Cart
-                                    }
+                                    onOpenDetail = { productId -> screen = Screen.Detail(productId) },
+                                    onOpenCart = { screen = Screen.Cart }
                                 )
                             }
-
                             is Screen.Detail -> {
                                 ProductDetailScreen(
                                     productId = currentScreen.productId,
                                     productViewModel = productViewModel,
-                                    onBack = {
-                                        screen = Screen.List
-                                    },
-                                    onOpenCart = {
-                                        screen = Cart
-                                    }
+                                    onBack = { screen = Screen.List },
+                                    onOpenCart = { screen = Screen.Cart }
                                 )
                             }
-
                             is Screen.Cart -> {
                                 CartScreen(
                                     productViewModel = productViewModel,
-                                    onBack = {
-                                        screen = Screen.List
-                                    },
-                                    onProceedToPayment = { screen = Screen.Payment}
+                                    onBack = { screen = Screen.List },
+                                    onProceedToPayment = { screen = Screen.Payment }
                                 )
                             }
-
                             is Screen.Login -> {
                                 LoginScreen(
                                     onLoginSuccess = {
-                                        screen = Screen.List
-                                    },
-                                    onRegisterClick = {
-                                        screen = Screen.Register
-                                    }
+                                        isLoggedIn = 1
+                                        screen = Screen.List },
+                                    onRegisterClick = { screen = Screen.Register }
                                 )
                             }
-
                             is Screen.Register -> {
                                 RegisterScreen(
-                                    onBack = {
-                                        screen = Screen.Login
-                                    },
-                                    onRegisterSuccess = {
-                                        screen = Screen.Login
-                                    }
+                                    onBack = { screen = Screen.Login },
+                                    onRegisterSuccess = { screen = Screen.Login },
+                                    onLoginClick = { screen = Screen.Login }
                                 )
                             }
-
                             is Screen.Payment -> {
                                 val cartItems = productViewModel.cartItems.collectAsState().value
                                 PaymentScreen(
-                                    cartItems = cartItems, // ← PASAMOS la lista
+                                    cartItems = cartItems,
                                     totalAmount = cartItems.sumOf { it.product.precio * it.cantidad }.toDouble(),
-                                    onBack = {
-                                        screen = Screen.Cart
-                                    },
+                                    onBack = { screen = Screen.Cart },
                                     onPaymentSuccess = {
                                         productViewModel.clearCart()
                                         screen = Screen.List
@@ -181,20 +181,23 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             is Screen.Blog -> {
-                                BlogScreen(
-                                    onBack = { screen = Screen.List }
-                                )
+                                BlogScreen(onBack = { screen = Screen.List })
                             }
                             is Screen.Nosotros -> {
-                                NosotrosScreen(
-                                    onBack = { screen = Screen.List}
+                                NosotrosScreen(onBack = { screen = Screen.List })
+                            }
+                            is Screen.Profile -> {
+                                ProfileScreen(
+                                    loginViewModel = loginViewModel,
+                                    onBack = { screen = Screen.List },
+                                    onLogout = {
+                                        loginViewModel.logout()
+                                        screen = Screen.List
+                                    }
                                 )
                             }
                         }
                     }
-
-
-
                 }
             }
         }

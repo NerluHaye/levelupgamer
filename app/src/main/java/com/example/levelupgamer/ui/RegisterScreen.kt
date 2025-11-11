@@ -1,22 +1,26 @@
 package com.example.levelupgamer.ui
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.levelupgamer.R
-import com.example.levelupgamer.data.repository.AuthRepository
 import com.example.levelupgamer.data.local.AppDatabase
+import com.example.levelupgamer.data.repository.AuthRepository
 import com.example.levelupgamer.data.util.Result
 import com.example.levelupgamer.viewmodel.RegisterViewModel
 import com.example.levelupgamer.viewmodel.RegisterViewModelFactory
@@ -24,116 +28,125 @@ import com.example.levelupgamer.viewmodel.RegisterViewModelFactory
 @Composable
 fun RegisterScreen(
     onBack: () -> Unit,
-    onRegisterSuccess: () -> Unit
+    onRegisterSuccess: () -> Unit,
+    onLoginClick: () -> Unit
 ) {
     val context = LocalContext.current
     val userDao = AppDatabase.getDatabase(context).userDao()
     val repository = remember { AuthRepository(userDao) }
-    val viewModel: RegisterViewModel= viewModel(factory = RegisterViewModelFactory(repository))
+    val viewModel: RegisterViewModel = viewModel(factory = RegisterViewModelFactory(repository))
 
     Box(
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFF1F2937)) // Fondo gris oscuro
             .padding(16.dp)
     ) {
-        Register(
+        RegisterContent(
             modifier = Modifier.align(Alignment.Center),
             viewModel = viewModel,
-            onRegisterSuccess = onRegisterSuccess
+            onRegisterSuccess = onRegisterSuccess,
+            onLoginClick = onLoginClick
         )
     }
 }
 
 @Composable
-fun Register(
+fun RegisterContent(
     modifier: Modifier,
     viewModel: RegisterViewModel,
-    onRegisterSuccess: () -> Unit
+    onRegisterSuccess: () -> Unit,
+    onLoginClick: () -> Unit
 ) {
-    var username by remember { mutableStateOf("") }
+    val username by viewModel.username.collectAsState()
     val email by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
-
     val registerState by viewModel.registerState.collectAsState()
 
     Column(modifier = modifier.fillMaxWidth()) {
-        HeaderImageR(Modifier.align(Alignment.CenterHorizontally))
+        // Logo
+        Image(
+            painter = painterResource(id = R.drawable.logolevelupgamer),
+            contentDescription = "Logo LevelUpGamer",
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        TextField(
+
+        // Username simple
+        OutlinedTextField(
             value = username,
-            onValueChange = { username = it },
+            onValueChange = { viewModel.onUsernameChange(it) },
             placeholder = { Text("Nombre de usuario") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
         Spacer(modifier = Modifier.height(8.dp))
-        EmailFieldR(email) { viewModel.onEmailChange(it) }
+
+        // Email simple
+        OutlinedTextField(
+            value = email,
+            onValueChange = { viewModel.onEmailChange(it) },
+            placeholder = { Text("Email") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            singleLine = true
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        PasswordFieldR(password) { viewModel.onPasswordChange(it) }
+
+        // Password simple
+        OutlinedTextField(
+            value = password,
+            onValueChange = { viewModel.onPasswordChange(it) },
+            placeholder = { Text("Contraseña") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            visualTransformation = PasswordVisualTransformation(),
+            singleLine = true
+        )
         Spacer(modifier = Modifier.height(16.dp))
 
-        RegisterButton {
-            viewModel.register()
+        // Botón registrar
+        Button(
+            onClick = { viewModel.register() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF22C55E),
+                contentColor = Color.White
+            )
+        ) {
+            Text("Registrarse", fontSize = 16.sp)
         }
-
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Estado de registro
         when (val state = registerState) {
-            is Result.Loading -> Text("Registrando...", fontSize = 14.sp)
+            is Result.Loading -> Text("Registrando...", fontSize = 14.sp, color = Color.White)
             is Result.Success -> {
-                Text("Usuario registrado correctamente")
                 onRegisterSuccess()
                 viewModel.resetState()
             }
-            is Result.Error -> Text("ERROR: ${state.message}")
+            is Result.Error -> Text(state.message ?: "Error", color = MaterialTheme.colorScheme.error)
             else -> {}
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Texto para ir a Login
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text(
+                "¿Ya tienes una cuenta? ",
+                fontSize = 12.sp,
+                color = Color.White
+            )
+            Text(
+                "Inicia sesión",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF22C55E),
+                modifier = Modifier.clickable { onLoginClick() }
+            )
+        }
     }
-}
-
-@Composable
-fun RegisterButton(onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(48.dp)
-    ) {
-        Text(text = "Registrarse", fontSize = 16.sp)
-    }
-}
-
-@Composable
-fun PasswordFieldR(value: String, onValueChange: (String) -> Unit) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text("Contraseña") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-        visualTransformation = PasswordVisualTransformation(),
-        singleLine = true,
-        maxLines = 1
-    )
-}
-
-@Composable
-fun EmailFieldR(value: String, onValueChange: (String) -> Unit) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text("Email") },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-        singleLine = true,
-        maxLines = 1
-    )
-}
-
-@Composable
-fun HeaderImageR(modifier: Modifier) {
-    Image(
-        painter = painterResource(id = R.drawable.logolevelupgamer),
-        contentDescription = "LoginHeader",
-        modifier = modifier
-    )
 }

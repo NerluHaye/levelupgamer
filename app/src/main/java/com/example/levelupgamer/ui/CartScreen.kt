@@ -5,23 +5,22 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.levelupgamer.viewmodel.ProductViewModel
-
-
-
 
 @Composable
 fun CartScreen(
@@ -31,7 +30,6 @@ fun CartScreen(
     modifier: Modifier = Modifier
 ) {
     val cartItems by productViewModel.cartItems.collectAsState()
-
 
     LaunchedEffect(Unit) {
         Log.d("CartScreen", "CartScreen composed, items=${cartItems.size}")
@@ -43,10 +41,12 @@ fun CartScreen(
             Button(onClick = onBack) { Text("Volver") }
 
             val totalPrice = cartItems.sumOf { it.product.precio * it.cantidad }
-            Text(text = "Total: $${totalPrice}",
+            Text(
+                text = "Total: $${totalPrice}",
                 fontSize = 24.sp,
                 modifier = Modifier.fillMaxWidth(),
-                textAlign = androidx.compose.ui.text.style.TextAlign.End
+                textAlign = TextAlign.End,
+                color = Color.White
             )
         }
 
@@ -54,7 +54,7 @@ fun CartScreen(
 
         if (cartItems.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "El carrito está vacío")
+                Text(text = "El carrito está vacío", color = Color.White)
             }
             return
         }
@@ -65,7 +65,8 @@ fun CartScreen(
                     elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(8.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1F2937)) // mismo gris que ProductList
                 ) {
                     Row(
                         modifier = Modifier.padding(12.dp),
@@ -88,22 +89,29 @@ fun CartScreen(
                             Text(
                                 text = item.product.nombre,
                                 maxLines = 1,
-                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
+                                color = Color.White
                             )
                             Text(
                                 text = "Cantidad: ${item.cantidad}",
                                 maxLines = 1,
-                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
+                                color = Color.White
                             )
                             Text(
                                 text = "Precio: $${item.product.precio}",
                                 maxLines = 1,
-                                overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                overflow = TextOverflow.Ellipsis,
+                                color = Color.White
                             )
                         }
 
-                        Button(onClick = { productViewModel.removeFromCart(item.product) }) {
-                            Text(text = "Eliminar")
+                        IconButton(onClick = { productViewModel.removeFromCart(item.product) }) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Eliminar",
+                                tint = Color.Red
+                            )
                         }
 
                     }
@@ -112,21 +120,21 @@ fun CartScreen(
         }
         Spacer(modifier = Modifier.height(8.dp))
 
-        Row (modifier = Modifier.padding(12.dp),
+        Row(
+            modifier = Modifier.padding(12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Start){
+            horizontalArrangement = Arrangement.Start
+        ){
             // Botón para vaciar el carrito
             Button(onClick = { productViewModel.clearCart() }, modifier = Modifier.weight(1f).padding(8.dp)) {
-                Text(text = "Vaciar carrito")
+                Text(text = "Vaciar carrito", color = Color.Black)
             }
             // Botón para proceder al pago (simulado)
             Button(
-                onClick = {
-                    onProceedToPayment()
-                },
+                onClick = { onProceedToPayment() },
                 modifier = Modifier.weight(1f).padding(8.dp)
             ) {
-                Text(text = "Proceder al pago")
+                Text(text = "Proceder al pago", color = Color.Black)
             }
 
         }
