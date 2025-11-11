@@ -32,6 +32,9 @@ import com.example.levelupgamer.viewmodel.LoginViewModel
 import com.example.levelupgamer.viewmodel.ProductViewModel
 import com.example.levelupgamer.viewmodel.ProductViewModelFactory
 import com.example.levelupgamer.ui.BlogScreen
+import androidx.compose.ui.unit.dp
+import com.example.levelupgamer.ui.NosotrosScreen
+
 
 sealed class Screen {
     object List : Screen()
@@ -41,6 +44,7 @@ sealed class Screen {
     object Register : Screen()
     object Payment : Screen()
     object Blog : Screen()
+    object Nosotros : Screen()
 }
 
 class MainActivity : ComponentActivity() {
@@ -85,6 +89,22 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxWidth(
                             )
                         )
+                    },
+                    bottomBar = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(12.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(text = "Telefono: +56 9 1234 5678")
+                            Text(
+                                text = "Sobre Nosotros",
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.clickable { screen = Screen.Nosotros }
+                            )
+                        }
+
                     }
                 ) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
@@ -165,8 +185,15 @@ class MainActivity : ComponentActivity() {
                                     onBack = { screen = Screen.List }
                                 )
                             }
+                            is Screen.Nosotros -> {
+                                NosotrosScreen(
+                                    onBack = { screen = Screen.List}
+                                )
+                            }
                         }
                     }
+
+
 
                 }
             }
