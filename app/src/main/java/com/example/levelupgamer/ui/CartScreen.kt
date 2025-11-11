@@ -3,7 +3,6 @@ package com.example.levelupgamer.ui
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -21,6 +20,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.levelupgamer.Screen
 import com.example.levelupgamer.viewmodel.ProductViewModel
+import com.example.levelupgamer.data.util.generarComprobantePDF
+import androidx.compose.ui.platform.LocalContext
+import android.content.Intent
+import android.net.Uri
+import androidx.core.content.FileProvider
+import java.io.File
+import java.io.FileOutputStream
+import android.os.Environment
+import android.graphics.pdf.PdfDocument
+import android.content.Context
+
+
 
 @Composable
 fun CartScreen(
@@ -30,6 +41,7 @@ fun CartScreen(
     modifier: Modifier = Modifier
 ) {
     val cartItems by productViewModel.cartItems.collectAsState()
+
 
     LaunchedEffect(Unit) {
         Log.d("CartScreen", "CartScreen composed, items=${cartItems.size}")
@@ -118,9 +130,15 @@ fun CartScreen(
                 Text(text = "Vaciar carrito")
             }
             // Botón para proceder al pago (simulado)
-            Button(onClick = onProceedToPayment, modifier = Modifier.weight(1f).padding(8.dp)) {
+            Button(
+                onClick = {
+                    onProceedToPayment()
+                },
+                modifier = Modifier.weight(1f).padding(8.dp)
+            ) {
                 Text(text = "Proceder al pago")
             }
+
         }
 
     }

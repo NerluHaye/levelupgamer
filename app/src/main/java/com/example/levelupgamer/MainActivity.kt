@@ -134,8 +134,10 @@ class MainActivity : ComponentActivity() {
                             }
 
                             is Screen.Payment -> {
+                                val cartItems = productViewModel.cartItems.collectAsState().value
                                 PaymentScreen(
-                                    totalAmount = productViewModel.cartItems.collectAsState().value.sumOf { it.product.precio * it.cantidad }.toDouble(),
+                                    cartItems = cartItems, // ← PASAMOS la lista
+                                    totalAmount = cartItems.sumOf { it.product.precio * it.cantidad }.toDouble(),
                                     onBack = {
                                         screen = Screen.Cart
                                     },
