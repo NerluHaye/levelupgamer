@@ -73,9 +73,9 @@ fun Login(
                 email = it
                 loginViewModel.onEmailChange(it)
             },
-            placeholder = { Text(text = "Email", color = Color.Gray) },
+            placeholder = { Text(text = "Email") },
             modifier = Modifier
-                .fillMaxWidth(), // gris más oscuro dentro del campo
+                .fillMaxWidth(),
 
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
@@ -89,7 +89,7 @@ fun Login(
                 password = it
                 loginViewModel.onPasswordChange(it)
             },
-            placeholder = { Text(text = "Contraseña", color = Color.Gray) },
+            placeholder = { Text(text = "Contraseña") },
             modifier = Modifier
                 .fillMaxWidth(),
 
@@ -113,17 +113,20 @@ fun Login(
         Spacer(modifier = Modifier.height(12.dp))
 
         // Registro
-        Text(
-            text = "¿No tienes cuenta? Registrarse",
-            modifier = Modifier
-                .clickable { onRegisterClick() }
-                .padding(4.dp),
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF22C55E)
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
+        Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text(
+                "¿No tienes una cuenta?, ",
+                fontSize = 12.sp,
+                color = Color.White
+            )
+            Text(
+                "Registrate",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF22C55E),
+                modifier = Modifier.clickable { onRegisterClick() }
+            )
+        }
 
         // Estado login
         loginState?.let { state ->
