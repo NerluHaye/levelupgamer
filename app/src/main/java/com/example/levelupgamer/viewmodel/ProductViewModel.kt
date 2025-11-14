@@ -10,13 +10,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ProductViewModel(private val repository: ProductRepository) : ViewModel() {
+open class ProductViewModel(private val repository: ProductRepository) : ViewModel() {
 
     private val _products = MutableStateFlow<List<Product>>(repository.getProducts())
     val products: StateFlow<List<Product>> = _products.asStateFlow()
 
     private val _cartItems = MutableStateFlow<List<CartItem>>(repository.getCart())
-    val cartItems: StateFlow<List<CartItem>> = _cartItems.asStateFlow()
+    open val cartItems: StateFlow<List<CartItem>> = _cartItems.asStateFlow()
+
 
     fun addToCart(product: Product, cantidad: Int = 1) {
         viewModelScope.launch {

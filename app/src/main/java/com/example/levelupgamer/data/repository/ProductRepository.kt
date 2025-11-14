@@ -6,7 +6,7 @@ import com.example.levelupgamer.model.Product
 import com.example.levelupgamer.R
 
 
-class ProductRepository {
+open class ProductRepository {
 
     private val products = listOf(
         Product(1, "Logitech G733 Wireless", 159990, "Auriculares", "Auriculares inalámbricos para juegos LIGHTSPEED con LIGHTSYNC RGB", R.drawable.logitech_g733),
@@ -38,11 +38,11 @@ class ProductRepository {
     // Carrito en memoria simple
     private val cart = mutableListOf<CartItem>()
 
-    fun getProducts(): List<Product> = products
+    open fun getProducts(): List<Product> = products
 
     fun getProductById(id: Int): Product? = products.find { it.id == id }
 
-    fun getCart(): List<CartItem> = cart.map { it.copy() }
+    open fun getCart(): List<CartItem> = cart.map { it.copy() }
 
     fun addToCart(product: Product, cantidad: Int = 1) {
         val existing = cart.find { it.product.id == product.id }
