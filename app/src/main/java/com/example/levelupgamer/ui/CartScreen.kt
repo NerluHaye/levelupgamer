@@ -21,10 +21,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.levelupgamer.viewmodel.ProductViewModel
+import com.example.levelupgamer.model.Product      // O la ruta correcta de tu modelo Product
+import com.example.levelupgamer.model.CartItem    // O la ruta correcta de tu modelo CartItem
+
+
 
 @Composable
 fun CartScreen(
-    productViewModel: ProductViewModel,
+    productViewModel: com.example.levelupgamer.viewmodel.ProductViewModel,
     onBack: () -> Unit,
     onProceedToPayment: () -> Unit,
     modifier: Modifier = Modifier
