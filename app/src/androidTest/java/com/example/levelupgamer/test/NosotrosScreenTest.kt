@@ -1,9 +1,9 @@
-package com.example.levelupgamer
+package com.example.levelupgamer.test
 
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.assertIsDisplayed
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.example.levelupgamer.ui.NosotrosScreen
 import com.example.levelupgamer.ui.theme.LevelUpGamerTheme
@@ -58,4 +58,3 @@ class NosotrosScreenTest {
             .assertIsDisplayed()
     }
 }
-
