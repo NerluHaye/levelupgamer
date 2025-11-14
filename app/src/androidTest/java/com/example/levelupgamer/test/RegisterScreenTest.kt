@@ -1,4 +1,4 @@
-package com.example.levelupgamer
+package com.example.levelupgamer.test
 
 import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
