@@ -1,15 +1,16 @@
 package com.example.levelupgamer
 
 import android.os.Bundle
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -79,7 +80,7 @@ class MainActivity : ComponentActivity() {
                             actions = {
                                 IconButton(onClick = { screen = Screen.Cart }) {
                                     Icon(
-                                        imageVector = androidx.compose.material.icons.Icons.Default.ShoppingCart,
+                                        imageVector = Icons.Default.ShoppingCart,
                                         contentDescription = "Carrito",
                                         tint = Color.White
                                     )
@@ -91,11 +92,11 @@ class MainActivity : ComponentActivity() {
                                         screen = Screen.Login
                                     }
                                 }) {
-                                    Icon(imageVector = androidx.compose.material.icons.Icons.Default.AccountCircle, contentDescription = "Usuario")
+                                    Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Usuario")
                                 }
                                 IconButton(onClick = { screen = Screen.Blog }) {
                                     Icon(
-                                        imageVector = androidx.compose.material.icons.Icons.Default.Menu,
+                                        imageVector = Icons.Default.Menu,
                                         contentDescription = "Blog",
                                         tint = Color.White
                                     )
