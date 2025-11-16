@@ -116,7 +116,7 @@ class MainActivity : ComponentActivity() {
                                 .padding(12.dp),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(text = "Tel: +56 9 1234 5678", color = Color.White)
+                            Text(text = "Call Center : +56 9 1234 5678", color = Color.White)
                             Text(
                                 text = "Sobre Nosotros",
                                 color = Color.White,
