@@ -22,8 +22,8 @@ class LoginScreenTest {
         composeTestRule.setContent {
             LevelUpGamerTheme {
                 LoginScreen(
+                    onRegisterClick = {},
                     onLoginSuccess = {},
-                    onRegisterClick = {}
                 )
             }
         }

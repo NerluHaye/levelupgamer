@@ -5,11 +5,11 @@ import java.math.BigDecimal
 data class ProductoDTO(
     val id: Long,
     val codigo: String,
-    val name: String,
-    val description: String,
-    val price: BigDecimal,
+    val nombre: String,
+    val descripcion: String,
+    val precio: BigDecimal,
     val stock: Int,
-    val categoryName: String,
+    val nombreCategoria: String,
     val imageUrl: String
 )
 

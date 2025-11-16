@@ -1,33 +1,17 @@
 package com.example.levelupgamer.data.repository
 
-import com.example.levelupgamer.data.local.dao.UserDao
-import com.example.levelupgamer.data.local.entity.UserEntity
-import com.example.levelupgamer.data.util.Result
-import com.example.levelupgamer.model.User
+import com.example.levelupgamer.data.remote.ApiService
+import com.example.levelupgamer.data.remote.model.LoginDTO
+import com.example.levelupgamer.data.remote.model.RegistroUsuarioDTO
+import com.example.levelupgamer.data.remote.model.UsuarioDTO
+class AuthRepository(private val apiService: ApiService) {
 
-class AuthRepository(private val userDao: UserDao) {
-
-    suspend fun register(user: User): Result<Boolean> {
-        val existingUser = userDao.getUserByEmail(user.email)
-        return if (existingUser != null) {
-            Result.Error("El correo ya está registrado.")
-        } else {
-            val entity = UserEntity(
-                username = user.username,
-                email = user.email,
-                password = user.password
-            )
-            userDao.registerUser(entity)
-            Result.Success(true)
-        }
+    suspend fun login(loginDTO: LoginDTO): UsuarioDTO {
+        return apiService.loginUsuario(loginDTO)
     }
 
-    suspend fun login(email: String, password: String): Result<UserEntity> {
-        val user = userDao.login(email, password)
-        return if (user != null) {
-            Result.Success(user)
-        } else {
-            Result.Error("Correo o contraseña incorrectos.")
-        }
+    suspend fun register(registroUsuarioDTO: RegistroUsuarioDTO): UsuarioDTO {
+        return apiService.registrarUsuario(registroUsuarioDTO)
     }
+
 }

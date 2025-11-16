@@ -2,67 +2,42 @@ package com.example.levelupgamer.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.levelupgamer.data.remote.model.LoginDTO
+import com.example.levelupgamer.data.remote.model.UsuarioDTO
 import com.example.levelupgamer.data.repository.AuthRepository
 import com.example.levelupgamer.data.util.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val repository: AuthRepository) : ViewModel() {
+    private val _user = MutableStateFlow<UsuarioDTO?>(null)
+    val user: StateFlow<UsuarioDTO?> = _user.asStateFlow()
 
-    private val _email = MutableStateFlow("")
-    val email: StateFlow<String> = _email
+    private val _loginState = MutableStateFlow<Result<UsuarioDTO>?>(null)
+    val loginState: StateFlow<Result<UsuarioDTO>?> = _loginState.asStateFlow()
 
-    private val _username = MutableStateFlow("")
-    val username: StateFlow<String> = _username
-
-    private val _password = MutableStateFlow("")
-    val password: StateFlow<String> = _password
-
-    private val _loginState = MutableStateFlow<Result<Boolean>?>(null)
-    val loginState: StateFlow<Result<Boolean>?> = _loginState
-
-    private val _isLoggedIn = MutableStateFlow(false)
-    val isLoggedIn: StateFlow<Boolean> = _isLoggedIn
-
-    fun onEmailChange(newEmail: String) {
-        _email.value = newEmail
-    }
-
-    fun onPasswordChange(newPassword: String) {
-        _password.value = newPassword
-    }
-
-    fun login() {
-        if (_email.value.isBlank() || _password.value.isBlank()) {
-            _loginState.value = Result.Error("Email y contraseña son obligatorios")
-            return
-        }
-
+    fun login(email: String, password: String) {
         viewModelScope.launch {
             _loginState.value = Result.Loading
-            val result = repository.login(_email.value, _password.value)
-            _loginState.value = when(result) {
-                is Result.Success -> {
-                    _isLoggedIn.value = true
-                    _username.value = result.data.username // <-- guardamos el username
-                    Result.Success(true)
-                }
-                is Result.Error -> Result.Error(result.message)
-                else -> null
+            try {
+                val loginDTO = LoginDTO(email, password)
+                val loggedInUser = repository.login(loginDTO)
+                _user.value = loggedInUser
+                _loginState.value = Result.Success(loggedInUser)
+            } catch (e: Exception) {
+                _loginState.value = Result.Error("Correo o contraseña incorrectos")
             }
         }
     }
 
-    fun resetState() {
+    fun logout() {
+        _user.value = null
         _loginState.value = null
     }
 
-    fun logout() {
-        _isLoggedIn.value = false
-        _email.value = ""
-        _password.value = ""
-        _username.value = ""
+    fun resetLoginState() {
         _loginState.value = null
     }
 }

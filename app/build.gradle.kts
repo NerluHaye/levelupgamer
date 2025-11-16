@@ -1,8 +1,12 @@
 plugins {
-    alias(libs.plugins.android.application) // Android
-    alias(libs.plugins.kotlin.android)      // Kotlin
-    alias(libs.plugins.kotlin.compose)      // Compose
-    id("kotlin-kapt")                        // KAPT para Room
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+}
+
+configurations.all {
+    exclude(group = "com.google.protobuf", module = "protobuf-java")
 }
 
 android {
@@ -41,6 +45,22 @@ android {
     buildFeatures {
         compose = true
     }
+
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/notice.txt"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/io.netty.versions.properties"
+            excludes += "com/google/protobuf/**"
+            excludes += "google/protobuf/**"
+        }
+    }
 }
 
 dependencies {
@@ -56,7 +76,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.firebase.appdistribution.gradle)
+    implementation(libs.androidx.compose.foundation)
 
     // Testing
     testImplementation(libs.junit)
@@ -78,7 +98,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
 
-    //Jetpack Compose y Material 3 (version 2025)
+    //Jetpack Compose y Material 3
     implementation("androidx.activity:activity-compose:1.11.0")
     implementation("androidx.compose.material3:material3:1.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-android:2.9.4")
@@ -91,5 +111,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
     implementation("androidx.compose.material:material-icons-core:1.7.0")
     implementation("androidx.compose.material:material-icons-extended:1.7.0")
+
+    implementation("io.coil-kt:coil-compose:2.6.0")
 
 }

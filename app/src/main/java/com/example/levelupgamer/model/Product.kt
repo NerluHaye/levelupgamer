@@ -1,10 +1,10 @@
 package com.example.levelupgamer.model
 
 data class Product(
-    val id: Int,
+    val id: Long,
     val nombre: String,
-    val precio: Int,
-    val categoria: String = "",
+    val precio: Double,
+    val nombreCategoria: String = "",
     val descripcion: String = "",
-    val imageRes: Int? = null
+    val imageUrl: String? // Cambiado a nullable para aceptar productos sin imagen
 )

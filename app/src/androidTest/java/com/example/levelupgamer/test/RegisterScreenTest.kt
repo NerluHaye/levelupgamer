@@ -24,7 +24,7 @@ class RegisterScreenTest {
                 RegisterScreen(
                     onBack = {},
                     onRegisterSuccess = {},
-                    onLoginClick = {}
+                    onLoginClick = {},
                 )
             }
         }

@@ -9,7 +9,8 @@ private val DarkColorScheme = darkColorScheme(
     primary = Color.Green,
     secondary = Color.Cyan,
     tertiary = Color.Red,
-    background =  Color.Black
+    background = Color.Black,    // Color para las tarjetas y otros componentes
+    surfaceVariant = Color(0xFF87CEEB) // Azul cielo
 )
 
 @Composable

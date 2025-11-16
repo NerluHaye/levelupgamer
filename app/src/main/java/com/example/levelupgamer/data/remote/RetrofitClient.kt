@@ -1,6 +1,6 @@
 package com.example.levelupgamer.data.remote
 
-import com.google.firebase.appdistribution.gradle.ApiService
+import com.example.levelupgamer.data.remote.ApiService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
