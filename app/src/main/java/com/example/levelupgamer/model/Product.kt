@@ -6,5 +6,5 @@ data class Product(
     val precio: Double,
     val nombreCategoria: String = "",
     val descripcion: String = "",
-    val imageUrl: String? // Cambiado a nullable para aceptar productos sin imagen
+    val imageUrl: String?
 )
