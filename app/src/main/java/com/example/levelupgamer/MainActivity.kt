@@ -26,6 +26,9 @@ import com.example.levelupgamer.viewmodel.LoginViewModel
 import com.example.levelupgamer.viewmodel.LoginViewModelFactory
 import com.example.levelupgamer.viewmodel.ProductViewModel
 import com.example.levelupgamer.viewmodel.ProductViewModelFactory
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
+
 
 sealed class Screen {
     object List : Screen()
@@ -49,14 +52,16 @@ class MainActivity : ComponentActivity() {
                 val repository = remember { ProductRepository() }
                 val productViewModel: ProductViewModel =
                     viewModel(factory = ProductViewModelFactory(repository))
-                val authRepository = remember { //recordar que se cambiara esto una vez se conecte al backend
-                    AuthRepository(
-                        AppDatabase.getDatabase(this).userDao()
+                val authRepository =
+                    remember { //recordar que se cambiara esto una vez se conecte al backend
+                        AuthRepository(
+                            AppDatabase.getDatabase(this).userDao()
+                        )
+                    }
+                val loginViewModel: LoginViewModel = viewModel(
+                    factory = LoginViewModelFactory(
+                        authRepository
                     )
-                }
-                val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(
-                    authRepository
-                )
                 )
 
                 var screen by remember { mutableStateOf<Screen>(Screen.List) }
@@ -92,7 +97,10 @@ class MainActivity : ComponentActivity() {
                                         screen = Screen.Login
                                     }
                                 }) {
-                                    Icon(imageVector = Icons.Default.AccountCircle, contentDescription = "Usuario")
+                                    Icon(
+                                        imageVector = Icons.Default.AccountCircle,
+                                        contentDescription = "Usuario"
+                                    )
                                 }
                                 IconButton(onClick = { screen = Screen.Blog }) {
                                     Icon(
@@ -131,64 +139,79 @@ class MainActivity : ComponentActivity() {
                             .fillMaxSize()
                             .background(backgroundColor)
                     ) {
-                        when (val currentScreen = screen) {
-                            is Screen.List -> {
-                                ProductListScreen(
+                        AnimatedContent(
+                            targetState = screen,
+                            transitionSpec = {
+                                // Animación combinada que devuelve ContentTransform correctamente
+                                (slideInHorizontally(
+                                    initialOffsetX = { fullWidth -> fullWidth },
+                                    animationSpec = tween(300)
+                                ) + fadeIn(animationSpec = tween(300)))
+                                    .togetherWith(
+                                        slideOutHorizontally(
+                                            targetOffsetX = { fullWidth -> -fullWidth },
+                                            animationSpec = tween(300)
+                                        ) + fadeOut(animationSpec = tween(300))
+                                    )
+                            }
+                        ) { currentScreen ->
+                            when (currentScreen) {
+                                is Screen.List -> ProductListScreen(
                                     productViewModel = productViewModel,
-                                    onOpenDetail = { productId -> screen = Screen.Detail(productId) },
+                                    onOpenDetail = { productId ->
+                                        screen = Screen.Detail(productId)
+                                    },
                                     onOpenCart = { screen = Screen.Cart }
                                 )
-                            }
-                            is Screen.Detail -> {
-                                ProductDetailScreen(
+
+                                is Screen.Detail -> ProductDetailScreen(
                                     productId = currentScreen.productId,
                                     productViewModel = productViewModel,
                                     onBack = { screen = Screen.List },
                                     onOpenCart = { screen = Screen.Cart }
                                 )
-                            }
-                            is Screen.Cart -> {
-                                CartScreen(
+
+                                is Screen.Cart -> CartScreen(
                                     productViewModel = productViewModel,
                                     onBack = { screen = Screen.List },
                                     onProceedToPayment = { screen = Screen.Payment }
                                 )
-                            }
-                            is Screen.Login -> {
-                                LoginScreen(
+
+                                is Screen.Login -> LoginScreen(
                                     onLoginSuccess = {
                                         isLoggedIn = 1
-                                        screen = Screen.List },
+                                        screen = Screen.List
+                                    },
                                     onRegisterClick = { screen = Screen.Register }
                                 )
-                            }
-                            is Screen.Register -> {
-                                RegisterScreen(
+
+                                is Screen.Register -> RegisterScreen(
                                     onBack = { screen = Screen.Login },
                                     onRegisterSuccess = { screen = Screen.Login },
                                     onLoginClick = { screen = Screen.Login }
                                 )
-                            }
-                            is Screen.Payment -> {
-                                val cartItems = productViewModel.cartItems.collectAsState().value
-                                PaymentScreen(
-                                    cartItems = cartItems,
-                                    totalAmount = cartItems.sumOf { it.product.precio * it.cantidad }.toDouble(),
-                                    onBack = { screen = Screen.Cart },
-                                    onPaymentSuccess = {
-                                        productViewModel.clearCart()
-                                        screen = Screen.List
-                                    }
-                                )
-                            }
-                            is Screen.Blog -> {
-                                BlogScreen(onBack = { screen = Screen.List })
-                            }
-                            is Screen.Nosotros -> {
-                                NosotrosScreen(onBack = { screen = Screen.List })
-                            }
-                            is Screen.Profile -> {
-                                ProfileScreen(
+
+                                is Screen.Payment -> {
+                                    val cartItems =
+                                        productViewModel.cartItems.collectAsState().value
+                                    PaymentScreen(
+                                        cartItems = cartItems,
+                                        totalAmount = cartItems.sumOf { it.product.precio * it.cantidad }
+                                            .toDouble(),
+                                        onBack = { screen = Screen.Cart },
+                                        onPaymentSuccess = {
+                                            productViewModel.clearCart()
+                                            screen = Screen.List
+                                        }
+                                    )
+                                }
+
+                                is Screen.Blog -> BlogScreen(onBack = { screen = Screen.List })
+                                is Screen.Nosotros -> NosotrosScreen(onBack = {
+                                    screen = Screen.List
+                                })
+
+                                is Screen.Profile -> ProfileScreen(
                                     loginViewModel = loginViewModel,
                                     onBack = { screen = Screen.List },
                                     onLogout = {
@@ -205,3 +228,4 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+

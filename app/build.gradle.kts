@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.animation)
 
     // Testing
     testImplementation(libs.junit)
@@ -88,6 +89,7 @@ dependencies {
 
     // Corrutinas para trabajo asincronico
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
+    //Iconos
     implementation("androidx.compose.material:material-icons-core:1.7.0")
     implementation("androidx.compose.material:material-icons-extended:1.7.0")
 
