@@ -10,6 +10,7 @@ import java.io.FileOutputStream
 fun generarComprobantePDF(
     context: Context,
     cartItems: List<CartItem>,
+    ubicacion: String = "Ubicación no disponible",
     nombreArchivo: String = "comprobante.pdf"
 ): File {
     val pdfDocument = PdfDocument()
@@ -23,17 +24,19 @@ fun generarComprobantePDF(
     canvas.drawText("COMPROBANTE DE COMPRA", 150f, yPosition, paint)
     yPosition += 30f
 
-    var total = 0
     cartItems.forEach { item ->
         val subtotal = item.product.precio * item.cantidad
         val line = "${item.product.nombre} x${item.cantidad} - $${subtotal}"
         canvas.drawText(line, 20f, yPosition, paint)
         yPosition += 25f
-        total += subtotal
     }
 
     yPosition += 20f
+    val total = cartItems.sumOf { it.product.precio * it.cantidad }
     canvas.drawText("TOTAL: $${total}", 20f, yPosition, paint)
+
+    yPosition += 30f
+    canvas.drawText("Ubicación: $ubicacion", 20f, yPosition, paint)
 
     pdfDocument.finishPage(page)
 
@@ -44,5 +47,3 @@ fun generarComprobantePDF(
 
     return archivo
 }
-
-
