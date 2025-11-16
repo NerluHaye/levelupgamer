@@ -20,9 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.levelupgamer.viewmodel.ProductViewModel
-import com.example.levelupgamer.model.Product      // O la ruta correcta de tu modelo Product
-import com.example.levelupgamer.model.CartItem    // O la ruta correcta de tu modelo CartItem
+
 
 
 
