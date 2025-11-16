@@ -3,7 +3,6 @@ package com.example.levelupgamer
 import android.os.Bundle
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -37,7 +36,7 @@ sealed class Screen {
     object Login : Screen()
     object Register : Screen()
     object Payment : Screen()
-    object Blog : Screen()
+
     object Nosotros : Screen()
     object Profile : Screen()
 }
@@ -100,15 +99,8 @@ class MainActivity : ComponentActivity() {
                                     Icon(
                                         imageVector = Icons.Default.AccountCircle,
                                         contentDescription = "Usuario"
-                                    )
-                                }
-                                IconButton(onClick = { screen = Screen.Blog }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Menu,
-                                        contentDescription = "Blog",
-                                        tint = Color.White
-                                    )
-                                }
+                                    ) }
+
                             },
                             colors = TopAppBarDefaults.topAppBarColors(
                                 containerColor = barColor
@@ -206,7 +198,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
 
-                                is Screen.Blog -> BlogScreen(onBack = { screen = Screen.List })
+
                                 is Screen.Nosotros -> NosotrosScreen(onBack = {
                                     screen = Screen.List
                                 })
