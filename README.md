@@ -9,9 +9,9 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 
 ## 📱 Colaboradores 
 
-- **Alexander Bello** – Logica de validacion, navegación y Backend.  
-- **Nicolás Jerez** – Diseño visual , gestión de estado y recursos nativos.  
-- **Abraham Neira** – Estructura modular (MVVM), monitoreo y Pruebas unitarias.
+- **Alexander Bello** – Logica de validacion, Navegación y Backend.  
+- **Nicolás Jerez** – Diseño visual , Gestión de estado y Recursos nativos.  
+- **Abraham Neira** – Estructura modular (MVVM), Monitoreo y Pruebas unitarias.
 
 ## 📱 Funcionalidades del proyecto
 
