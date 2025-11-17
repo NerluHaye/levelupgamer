@@ -49,7 +49,7 @@ class RegisterViewModelTest {
 
     @Test
     fun `register success - sets success state`() = runTest {
-        // Given
+
         val nombre = "Test User"
         val email = "test@example.com"
         val password = "password"
@@ -59,11 +59,9 @@ class RegisterViewModelTest {
         val user = UsuarioDTO(id = 1, nombre = nombre, email = email, tieneDescuentoDuoc = true, puntosLevelUp = 0, rol = "USER")
         whenever(repository.register(registroDTO)).thenReturn(user)
 
-        // When
         viewModel.register(nombre, email, password, fechaNacimiento, codigoReferido)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         val registerState = viewModel.registerState.value
         assertTrue(registerState is Result.Success)
         assertEquals(user, (registerState as Result.Success).data)
@@ -71,7 +69,7 @@ class RegisterViewModelTest {
 
     @Test
     fun `register failure - repository throws exception - sets error state`() = runTest {
-        // Given
+
         val nombre = "Test User"
         val email = "test@example.com"
         val password = "password"
@@ -80,11 +78,9 @@ class RegisterViewModelTest {
         val errorMessage = "Error en el registro. Inténtalo de nuevo."
         whenever(repository.register(any())).thenThrow(RuntimeException())
 
-        // When
         viewModel.register(nombre, email, password, fechaNacimiento, codigoReferido)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         val registerState = viewModel.registerState.value
         assertTrue(registerState is Result.Error)
         assertEquals(errorMessage, (registerState as Result.Error).message)
@@ -92,10 +88,9 @@ class RegisterViewModelTest {
 
     @Test
     fun `register with blank name - sets error state`() = runTest {
-        // When
+
         viewModel.register("", "email@test.com", "password", "2000-01-01", null)
-        
-        // Then
+
         val registerState = viewModel.registerState.value
         assertTrue(registerState is Result.Error)
         assertEquals("Todos los campos obligatorios deben ser rellenados.", (registerState as Result.Error).message)
@@ -104,10 +99,9 @@ class RegisterViewModelTest {
     
     @Test
     fun `register with blank email - sets error state`() = runTest {
-        // When
+
         viewModel.register("name", "", "password", "2000-01-01", null)
-        
-        // Then
+
         val registerState = viewModel.registerState.value
         assertTrue(registerState is Result.Error)
         assertEquals("Todos los campos obligatorios deben ser rellenados.", (registerState as Result.Error).message)
@@ -116,10 +110,9 @@ class RegisterViewModelTest {
 
     @Test
     fun `resetRegisterState - sets register state to null`() {
-        // When
+
         viewModel.resetRegisterState()
 
-        // Then
         assertNull(viewModel.registerState.value)
     }
 }

@@ -46,18 +46,16 @@ class LoginViewModelTest {
 
     @Test
     fun `login success - sets user and success state`() = runTest {
-        // Given
+
         val email = "test@example.com"
         val password = "password"
         val loginDTO = LoginDTO(email, password)
         val user = UsuarioDTO(id = 1, nombre = "Test User", email = email, tieneDescuentoDuoc = false, puntosLevelUp = 0, rol = "USER")
         whenever(repository.login(loginDTO)).thenReturn(user)
 
-        // When
         viewModel.login(email, password)
-        testDispatcher.scheduler.advanceUntilIdle() // Execute coroutine
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         assertEquals(user, viewModel.user.value)
         val loginState = viewModel.loginState.value
         assertTrue(loginState is Result.Success)
@@ -66,18 +64,16 @@ class LoginViewModelTest {
 
     @Test
     fun `login failure - sets error state`() = runTest {
-        // Given
+
         val email = "wrong@example.com"
         val password = "wrongpassword"
         val loginDTO = LoginDTO(email, password)
         val errorMessage = "Correo o contraseña incorrectos"
         whenever(repository.login(loginDTO)).thenThrow(RuntimeException())
 
-        // When
         viewModel.login(email, password)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         assertNull(viewModel.user.value)
         val loginState = viewModel.loginState.value
         assertTrue(loginState is Result.Error)
@@ -86,8 +82,7 @@ class LoginViewModelTest {
 
     @Test
     fun `logout - clears user and login state`() = runTest {
-        // Given
-        // Set a logged-in state first
+
         val email = "test@example.com"
         val password = "password"
         val loginDTO = LoginDTO(email, password)
@@ -96,24 +91,19 @@ class LoginViewModelTest {
         viewModel.login(email, password)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // When
         viewModel.logout()
 
-        // Then
         assertNull(viewModel.user.value)
         assertNull(viewModel.loginState.value)
     }
     
     @Test
     fun `resetLoginState - sets login state to null`() = runTest {
-        // Given
-        // Set some state
+
         val loginState = Result.Error("An error")
-        
-        // When
+
         viewModel.resetLoginState()
-        
-        // Then
+
         assertNull(viewModel.loginState.value)
     }
 }
