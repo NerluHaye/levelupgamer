@@ -6,11 +6,12 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
-import android.location.LocationManager
 import android.net.Uri
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.* 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -22,6 +23,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.example.levelupgamer.data.util.generarComprobantePDF
 import com.example.levelupgamer.model.CartItem
+import android.location.LocationManager
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun PaymentScreen(
@@ -29,7 +33,10 @@ fun PaymentScreen(
     totalAmount: Double,
     onPaymentSuccess: () -> Unit,
     onBack: () -> Unit
-) {
+
+)
+
+{
     val context = LocalContext.current
     val activity = context as? android.app.Activity
     var ubicacion by remember { mutableStateOf("Ubicación no disponible") }
@@ -65,37 +72,21 @@ fun PaymentScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                "Total a Pagar:",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
-            Text(
-                "$${totalAmount}",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
-            )
+            Text("Total a Pagar:", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Text("$${totalAmount}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.weight(1f))
 
-        // Mostrar ubicación actual
-        Text(text = ubicacion, fontSize = 14.sp, color = Color.White)
-        Spacer(modifier = Modifier.height(16.dp))
 
-        // Botón de pago
+        Spacer(modifier = Modifier.height(8.dp))
         Button(
             onClick = {
-                // Verificar permisos de ubicación
-                if (ContextCompat.checkSelfPermission(
-                        context,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) == PackageManager.PERMISSION_GRANTED
+                // Verificar permisos
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED
                 ) {
-                    val locationManager =
-                        context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                    val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
                     val listener = object : LocationListener {
                         override fun onLocationChanged(location: Location) {
                             ubicacion = "Lat: ${location.latitude}, Lng: ${location.longitude}"
@@ -124,12 +115,7 @@ fun PaymentScreen(
                     }
 
                     // Solicitar ubicación GPS
-                    locationManager.requestLocationUpdates(
-                        LocationManager.GPS_PROVIDER,
-                        0L,
-                        0f,
-                        listener
-                    )
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0L, 0f, listener)
 
                 } else {
                     // Pedir permisos
