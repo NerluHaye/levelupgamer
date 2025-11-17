@@ -42,9 +42,6 @@ fun ProductDetailScreen(
                 Icon(painter = painterResource(id = android.R.drawable.ic_menu_revert), contentDescription = "Atrás")
             }
             Spacer(modifier = Modifier.weight(1f))
-            IconButton(onClick = onOpenCart) {
-                Icon(painter = painterResource(id = android.R.drawable.ic_menu_view), contentDescription = "Ver carrito")
-            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
