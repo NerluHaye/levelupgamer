@@ -81,7 +81,7 @@ class MainActivity : ComponentActivity() {
                                 icon = {
                                     Icon(Icons.Default.AccountCircle, contentDescription = "Usuario")
                                 },
-                                selected = false, // Deberías manejar el estado 'selected' dinámicamente
+                                selected = false,
                                 onClick = {
                                     screen = if (isLoggedIn) Screen.Profile else Screen.Login
                                     scope.launch { drawerState.close() }
