@@ -1,6 +1,7 @@
 package com.example.levelupgamer
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -38,7 +39,7 @@ sealed class Screen {
     object Login : Screen()
     object Register : Screen()
     object Payment : Screen()
-    object Blog : Screen()
+
     object Nosotros : Screen()
     object Profile : Screen()
 }
@@ -118,7 +119,7 @@ class MainActivity : ComponentActivity() {
                             when (val currentScreen = screen) {
                                 is Screen.List -> ProductListScreen(productViewModel = productViewModel, onOpenDetail = { productId -> screen = Screen.Detail(productId) }, onOpenCart = { screen = Screen.Cart })
                                 is Screen.Detail -> ProductDetailScreen(productId = currentScreen.productId, productViewModel = productViewModel, onBack = { screen = Screen.List }, onOpenCart = { screen = Screen.Cart })
-                                is Screen.Cart -> CartScreen(productViewModel = productViewModel, onBack = { screen = Screen.List }, onProceedToPayment = { screen = Screen.Payment })
+                                is Screen.Cart -> CartScreen(productViewModel = productViewModel, onBack = { screen = Screen.List }, onProceedToPayment = { run { if (isLoggedIn) screen = Screen.Payment else Toast.makeText(this@MainActivity, "Debes iniciar sesión para pagar", Toast.LENGTH_SHORT).show() } })
                                 is Screen.Login -> LoginScreen(loginViewModel = loginViewModel, onLoginSuccess = { screen = Screen.List }, onRegisterClick = { screen = Screen.Register })
                                 is Screen.Register -> RegisterScreen(registerViewModel = registerViewModel, onRegisterSuccess = { screen = Screen.Login }, onLoginClick = { screen = Screen.Login })
                                 is Screen.Payment -> {
