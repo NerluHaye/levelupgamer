@@ -40,7 +40,7 @@ fun PaymentSuccessScreen(onReturnHome: () -> Unit) {
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Tu pedido está en camino 🚚",
+                text = "Tu pedido está en camino",
                 fontSize = 20.sp,
                 textAlign = TextAlign.Center,
 
