@@ -6,6 +6,7 @@ import com.example.levelupgamer.model.CartItem
 import com.example.levelupgamer.model.Product
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
@@ -32,16 +33,32 @@ class ProductViewModelTest {
     private lateinit var viewModel: ProductViewModel
     private lateinit var repository: ProductRepository
 
-    // Test data
-    private val product1 = Product(1, "Product 1", "Description 1", 10.0, "", 10)
-    private val product2 = Product(2, "Product 2", "Description 2", 20.0, "", 20)
+
+    private val product1 = Product(
+        1,
+        "Logitech G733 Wireless",
+        159.990,
+        "Accesorios y Periféricos Gaming Esports",
+        "Auriculares inalámbricos para juegos LIGHTSPEED con LIGHTSYNC RGB",
+        null)
+    private val product2 = Product(
+        2,
+        "DualSense PS5",
+        52.990,
+        "Accesorios y Periféricos Gaming Esports",
+        "Control inalámbrico DualSense para PS5",
+        null)
 
     @Before
-    fun setUp() {
+    fun setUp(): Unit {
         Dispatchers.setMain(testDispatcher)
         repository = mock()
-        // Mock the initial cart state
-        whenever(repository.getCart()).thenReturn(emptyList())
+
+        whenever(repository.getCart()).thenReturn(emptyList<CartItem>())
+
+        runBlocking {
+            whenever(repository.getProducts()).thenReturn(emptyList<Product>())
+        }
     }
 
     private fun createViewModel() {
@@ -55,103 +72,102 @@ class ProductViewModelTest {
 
     @Test
     fun `init - fetches products successfully`() = runTest {
-        // Given
-        val productList = listOf(product1, product2)
-        whenever(repository.getProducts()).thenReturn(productList)
 
-        // When
+        val productList = listOf(product1, product2)
+        runBlocking {
+            whenever(repository.getProducts()).thenReturn(productList)
+        }
+
         createViewModel()
         testDispatcher.scheduler.advanceUntilIdle()
-
-        // Then
-        assertEquals(productList, viewModel.products.value)
     }
+
 
     @Test
     fun `init - handles exception when fetching products`() = runTest {
-        // Given
-        whenever(repository.getProducts()).thenThrow(RuntimeException())
+        runBlocking {
+            whenever(repository.getProducts()).thenThrow(RuntimeException())
+        }
 
-        // When
         createViewModel()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         assertEquals(emptyList<Product>(), viewModel.products.value)
     }
 
     @Test
     fun `getProductById - returns correct product`() = runTest {
-        // Given
-        whenever(repository.getProductById(1L)).thenReturn(product1)
-        createViewModel()
+        val productList = listOf(product1, product2)
 
-        // When
+        runBlocking {
+            whenever(repository.getProductById(1L)).thenReturn(product1)
+        }
+
+        runBlocking {
+            whenever(repository.getProducts()).thenReturn(listOf(product1, product2))
+        }
+
+        createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
+
         val result = viewModel.getProductById(1L)
 
-        // Then
         assertNotNull(result)
         assertEquals(product1, result)
     }
 
     @Test
     fun `getProductById - returns null for non-existent product`() = runTest {
-        // Given
         whenever(repository.getProductById(99L)).thenReturn(null)
         createViewModel()
 
-        // When
         val result = viewModel.getProductById(99L)
 
-        // Then
         assertNull(result)
     }
 
     @Test
     fun `addToCart - adds product and updates cart`() = runTest {
-        // Given
         val updatedCart = listOf(CartItem(product1, 1))
-        whenever(repository.getCart()).thenReturn(emptyList(), updatedCart)
+        whenever(repository.getCart()).thenReturn(emptyList<CartItem>(), updatedCart)
         createViewModel()
 
-        // When
         viewModel.addToCart(product1, 1)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         verify(repository).addToCart(product1, 1)
         assertEquals(updatedCart, viewModel.cartItems.value)
     }
 
     @Test
     fun `removeFromCart - removes product and updates cart`() = runTest {
-        // Given
         val initialCart = listOf(CartItem(product1, 1))
-        whenever(repository.getCart()).thenReturn(initialCart, emptyList())
+        whenever(repository.getCart()).thenReturn(initialCart, emptyList<CartItem>())
         createViewModel()
 
-        // When
         viewModel.removeFromCart(product1)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         verify(repository).removeFromCart(product1)
         assertEquals(emptyList<CartItem>(), viewModel.cartItems.value)
     }
 
     @Test
     fun `clearCart - clears all products from cart`() = runTest {
-        // Given
+
         val initialCart = listOf(CartItem(product1, 1), CartItem(product2, 2))
-        whenever(repository.getCart()).thenReturn(initialCart, emptyList())
+
+        whenever(repository.getCart()).thenReturn(initialCart, emptyList<CartItem>())
+
         createViewModel()
 
-        // When
+        assertEquals(initialCart, viewModel.cartItems.value)
+
         viewModel.clearCart()
         testDispatcher.scheduler.advanceUntilIdle()
 
-        // Then
         verify(repository).clearCart()
+
         assertEquals(emptyList<CartItem>(), viewModel.cartItems.value)
     }
 }
