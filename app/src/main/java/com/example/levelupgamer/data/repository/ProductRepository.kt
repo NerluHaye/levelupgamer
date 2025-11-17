@@ -5,11 +5,11 @@ import com.example.levelupgamer.data.remote.ApiService
 import com.example.levelupgamer.model.CartItem
 import com.example.levelupgamer.model.Product
 
-class ProductRepository(private val apiService: ApiService) {
+open class ProductRepository(private val apiService: ApiService) {
 
     private val cart = mutableListOf<CartItem>()
 
-    suspend fun getProducts(): List<Product> {
+    open suspend fun getProducts(): List<Product> {
         return try {
             val dtoList = apiService.getAllProductos()
             Log.d("ProductRepository", "Productu DTO recivido: ${dtoList.size} items")
@@ -50,7 +50,7 @@ class ProductRepository(private val apiService: ApiService) {
         }
     }
 
-    fun getCart(): List<CartItem> = cart.map { it.copy() }
+    open fun getCart(): List<CartItem> = cart.map { it.copy() }
 
     fun addToCart(product: Product, cantidad: Int = 1) {
         val existing = cart.find { it.product.id == product.id }
