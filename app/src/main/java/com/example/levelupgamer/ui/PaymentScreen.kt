@@ -6,14 +6,16 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
-import android.location.LocationManager
 import android.net.Uri
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.material3.* 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.app.ActivityCompat
@@ -21,25 +23,72 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.example.levelupgamer.data.util.generarComprobantePDF
 import com.example.levelupgamer.model.CartItem
+import android.location.LocationManager
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @Composable
 fun PaymentScreen(
     cartItems: List<CartItem>,
     totalAmount: Double,
-    onBack: () -> Unit,
-    onPaymentSuccess: () -> Unit
-) {
+    onPaymentSuccess1: String,
+    onPaymentSuccess: () -> Unit,
+    onBack: () -> Unit
+
+)
+
+{
     val context = LocalContext.current
     val activity = context as? android.app.Activity
     var ubicacion by remember { mutableStateOf("Ubicación no disponible") }
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Button(onClick = onBack) { Text("Volver al carrito") }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        Text(
+            text = "Resumen de la Compra",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.White
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Total a pagar: $${totalAmount}", fontSize = 24.sp)
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(text = ubicacion, fontSize = 14.sp)
-        Spacer(modifier = Modifier.height(16.dp))
+
+        // Lista de productos
+        cartItems.forEach {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(text = "${it.product.nombre} x${it.cantidad}", color = Color.White)
+                Text(text = "$${it.product.precio * it.cantidad}", color = Color.White)
+            }
+        }
+
+        Divider(modifier = Modifier.padding(vertical = 16.dp))
+
+        // Total
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text("Total a Pagar:", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Text("$${totalAmount}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        }
+
+        // 20% Descuento usuarios DUOC
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            Text("$onPaymentSuccess1", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        }
+
+        Spacer(modifier = Modifier.weight(1f))
+
+
+        Spacer(modifier = Modifier.height(8.dp))
         Button(
             onClick = {
                 // Verificar permisos
@@ -69,7 +118,7 @@ fun PaymentScreen(
                             // Confirmar pago
                             onPaymentSuccess()
 
-                            // Dejar de recibir updates
+                            // Detener updates de GPS
                             locationManager.removeUpdates(this)
                         }
                     }
@@ -86,9 +135,24 @@ fun PaymentScreen(
                     )
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF22C55E))
         ) {
-            Text("Confirmar pago")
+            Text("Pagar Ahora", fontSize = 18.sp, color = Color.Black)
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Botón volver al carrito
+        OutlinedButton(
+            onClick = onBack,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+        ) {
+            Text("Volver al Carrito")
         }
     }
 }

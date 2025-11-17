@@ -2,66 +2,39 @@ package com.example.levelupgamer.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.levelupgamer.data.remote.model.RegistroUsuarioDTO
+import com.example.levelupgamer.data.remote.model.UsuarioDTO
 import com.example.levelupgamer.data.repository.AuthRepository
 import com.example.levelupgamer.data.util.Result
-import com.example.levelupgamer.model.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
 
-    private val _email = MutableStateFlow("")
-    val email: StateFlow<String> = _email
+    private val _registerState = MutableStateFlow<Result<UsuarioDTO>?>(null)
+    val registerState: StateFlow<Result<UsuarioDTO>?> = _registerState.asStateFlow()
 
-    private val _password = MutableStateFlow("")
-    val password: StateFlow<String> = _password
-
-    private val _username = MutableStateFlow("")
-    val username: StateFlow<String> = _username
-
-    private val _registerState = MutableStateFlow<Result<Boolean>?>(null)
-    val registerState: StateFlow<Result<Boolean>?> = _registerState
-
-    fun onEmailChange(newEmail: String) {
-        _email.value = newEmail
-    }
-
-    fun onPasswordChange(newPassword: String) {
-        _password.value = newPassword
-    }
-
-    fun onUsernameChange(newUsername: String) {
-        _username.value = newUsername
-    }
-
-    fun register() {
-        // Validar campos
-        if (_username.value.isBlank() || _email.value.isBlank() || _password.value.isBlank()) {
-            _registerState.value = Result.Error("Todos los campos son obligatorios")
+    fun register(nombre: String, email: String, password: String, fechaNacimiento: String, codigoReferido: String?) {
+        if (nombre.isBlank() || email.isBlank() || password.isBlank() || fechaNacimiento.isBlank()) {
+            _registerState.value = Result.Error("Todos los campos obligatorios deben ser rellenados.")
             return
         }
 
-        val user = User(
-            username = _username.value,
-            email = _email.value,
-            password = _password.value
-        )
-
         viewModelScope.launch {
             _registerState.value = Result.Loading
-            val result = repository.register(user)
-            _registerState.value = result
+            try {
+                val registroDTO = RegistroUsuarioDTO(nombre, email, password, fechaNacimiento, codigoReferido)
+                val registeredUser = repository.register(registroDTO)
+                _registerState.value = Result.Success(registeredUser)
+            } catch (e: Exception) {
+                _registerState.value = Result.Error("Error en el registro. Inténtalo de nuevo.")
+            }
         }
     }
 
-    fun resetFields() {
-        _email.value = ""
-        _password.value = ""
-        _username.value = ""
-    }
-
-    fun resetState() {
+    fun resetRegisterState() {
         _registerState.value = null
     }
 }

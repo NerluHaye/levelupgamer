@@ -1,8 +1,12 @@
 plugins {
-    alias(libs.plugins.android.application) // Android
-    alias(libs.plugins.kotlin.android)      // Kotlin
-    alias(libs.plugins.kotlin.compose)      // Compose
-    id("kotlin-kapt")                        // KAPT para Room
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    id("kotlin-kapt")
+}
+
+configurations.all {
+    exclude(group = "com.google.protobuf", module = "protobuf-java")
 }
 
 android {
@@ -41,6 +45,24 @@ android {
     buildFeatures {
         compose = true
     }
+
+    packagingOptions {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "META-INF/LICENSE"
+            excludes += "META-INF/LICENSE.md"
+            excludes += "META-INF/LICENSE-notice.md"
+            excludes += "META-INF/LICENSE.txt"
+            excludes += "META-INF/license.txt"
+            excludes += "META-INF/NOTICE"
+            excludes += "META-INF/notice.txt"
+            excludes += "META-INF/INDEX.LIST"
+            excludes += "META-INF/io.netty.versions.properties"
+            excludes += "com/google/protobuf/**"
+            excludes += "google/protobuf/**"
+        }
+    }
 }
 
 dependencies {
@@ -56,7 +78,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.animation)
+    implementation(libs.androidx.compose.foundation)
 
     // Testing
     testImplementation(libs.junit)
@@ -78,7 +100,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
 
-    //Jetpack Compose y Material 3 (version 2025)
+    //Jetpack Compose y Material 3
     implementation("androidx.activity:activity-compose:1.11.0")
     implementation("androidx.compose.material3:material3:1.4.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-android:2.9.4")
@@ -89,8 +111,26 @@ dependencies {
 
     // Corrutinas para trabajo asincronico
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0")
-    //Iconos
     implementation("androidx.compose.material:material-icons-core:1.7.0")
     implementation("androidx.compose.material:material-icons-extended:1.7.0")
+
+    implementation("io.coil-kt:coil-compose:2.6.0")
+
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    // Para el mocking del ViewModel
+    // Si usas MockK:
+    testImplementation("io.mockk:mockk:1.13.11") // Versión de ejemplo
+    androidTestImplementation("io.mockk:mockk-android:1.13.11") // Versión de ejemplo
+
+    // Para testear ViewModel
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
+    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+
+    // Si usas MockK con corrutinas (que es tu caso)
+    androidTestImplementation("io.mockk:mockk-android:1.13.8")
+
 
 }

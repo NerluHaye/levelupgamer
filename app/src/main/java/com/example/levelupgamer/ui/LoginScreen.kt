@@ -1,45 +1,32 @@
 package com.example.levelupgamer.ui
 
-import android.util.Log
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.levelupgamer.R
-import com.example.levelupgamer.data.local.AppDatabase
-import com.example.levelupgamer.data.repository.AuthRepository
 import com.example.levelupgamer.data.util.Result
 import com.example.levelupgamer.viewmodel.LoginViewModel
-import com.example.levelupgamer.viewmodel.LoginViewModelFactory
+import androidx.compose.foundation.clickable
 
 @Composable
 fun LoginScreen(
     onRegisterClick: () -> Unit,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
+    loginViewModel: LoginViewModel
 ) {
-    val context = LocalContext.current
-    val userDao = AppDatabase.getDatabase(context).userDao()
-    val repository = remember { AuthRepository(userDao) }
-    val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(repository))
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1F2937)) // fondo gris azulado
             .padding(16.dp)
     ) {
         Login(
@@ -69,14 +56,10 @@ fun Login(
         // Email
         OutlinedTextField(
             value = email,
-            onValueChange = {
-                email = it
-                loginViewModel.onEmailChange(it)
-            },
+            onValueChange = { email = it },
             placeholder = { Text(text = "Email") },
             modifier = Modifier
                 .fillMaxWidth(),
-
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
         )
@@ -85,14 +68,10 @@ fun Login(
         // Password
         OutlinedTextField(
             value = password,
-            onValueChange = {
-                password = it
-                loginViewModel.onPasswordChange(it)
-            },
+            onValueChange = { password = it },
             placeholder = { Text(text = "Contraseña") },
             modifier = Modifier
                 .fillMaxWidth(),
-
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
@@ -101,13 +80,13 @@ fun Login(
 
         // Botón Login
         Button(
-            onClick = { loginViewModel.login() },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF22C55E)),
+            onClick = { loginViewModel.login(email, password) },
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
         ) {
-            Text("Iniciar Sesión", color = Color.White)
+            Text("Iniciar Sesión")
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -117,13 +96,12 @@ fun Login(
             Text(
                 "¿No tienes una cuenta?, ",
                 fontSize = 12.sp,
-                color = Color.White
             )
             Text(
                 "Registrate",
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF22C55E),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.clickable { onRegisterClick() }
             )
         }
@@ -131,10 +109,12 @@ fun Login(
         // Estado login
         loginState?.let { state ->
             when(state) {
-                is Result.Loading -> Text("Iniciando sesión...", color = Color.White)
+                is Result.Loading -> Text("Iniciando sesión...")
                 is Result.Success -> {
-                    onLoginSuccess()
-                    loginViewModel.resetState()
+                    LaunchedEffect(state) {
+                        onLoginSuccess()
+                        loginViewModel.resetLoginState()
+                    }
                 }
                 is Result.Error -> Text(state.message, color = MaterialTheme.colorScheme.error)
             }
