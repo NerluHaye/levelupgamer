@@ -43,6 +43,7 @@ sealed class Screen {
 
     object Nosotros : Screen()
     object Profile : Screen()
+    object PaymentSuccess : Screen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -123,12 +124,14 @@ class MainActivity : ComponentActivity() {
                                 is Screen.Cart -> CartScreen(productViewModel = productViewModel, onBack = { screen = Screen.List }, onProceedToPayment = { run { if (isLoggedIn) screen = Screen.Payment else Toast.makeText(this@MainActivity, "Debes iniciar sesión para pagar", Toast.LENGTH_SHORT).show() } })
                                 is Screen.Login -> LoginScreen(loginViewModel = loginViewModel, onLoginSuccess = { screen = Screen.List }, onRegisterClick = { screen = Screen.Register })
                                 is Screen.Register -> RegisterScreen(registerViewModel = registerViewModel, onRegisterSuccess = { screen = Screen.Login }, onLoginClick = { screen = Screen.Login })
-                                is Screen.Payment -> {
-                                    val cartItems = productViewModel.cartItems.collectAsState().value
-                                    PaymentScreen(cartItems = cartItems, totalAmount = cartItems.sumOf { it.product.precio * it.cantidad }, onBack = { screen = Screen.Cart }, onPaymentSuccess = { productViewModel.clearCart(); screen = Screen.List })
+                                is Screen.Payment -> { val cartItems = productViewModel.cartItems.collectAsState().value
+                                    PaymentScreen(cartItems = cartItems, totalAmount = cartItems.sumOf { it.product.precio * it.cantidad }, onBack = { screen = Screen.Cart }, onPaymentSuccess = { productViewModel.clearCart(); screen = Screen.PaymentSuccess })
                                 }
                                 is Screen.Nosotros -> NosotrosScreen(onBack = { screen = Screen.List })
                                 is Screen.Profile -> ProfileScreen(loginViewModel = loginViewModel, onBack = { screen = Screen.List }, onLogout = { loginViewModel.logout(); screen = Screen.List })
+                                is Screen.PaymentSuccess -> PaymentSuccessScreen (onReturnHome = { screen = Screen.List }
+                                )
+
                                 else -> {}
                             }
                         }
