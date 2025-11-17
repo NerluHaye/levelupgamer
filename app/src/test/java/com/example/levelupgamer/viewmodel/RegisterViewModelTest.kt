@@ -56,7 +56,7 @@ class RegisterViewModelTest {
         val fechaNacimiento = "2000-01-01"
         val codigoReferido = "1234"
         val registroDTO = RegistroUsuarioDTO(nombre, email, password, fechaNacimiento, codigoReferido)
-        val user = UsuarioDTO(id = 1, nombre = nombre, email = email, token = "someToken")
+        val user = UsuarioDTO(id = 1, nombre = nombre, email = email, tieneDescuentoDuoc = true, puntosLevelUp = 0, rol = "USER")
         whenever(repository.register(registroDTO)).thenReturn(user)
 
         // When

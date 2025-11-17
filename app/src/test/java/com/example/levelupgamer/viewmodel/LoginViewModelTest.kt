@@ -50,7 +50,7 @@ class LoginViewModelTest {
         val email = "test@example.com"
         val password = "password"
         val loginDTO = LoginDTO(email, password)
-        val user = UsuarioDTO(id = 1, nombre = "Test User", email = email, token = "someToken")
+        val user = UsuarioDTO(id = 1, nombre = "Test User", email = email, tieneDescuentoDuoc = false, puntosLevelUp = 0, rol = "USER")
         whenever(repository.login(loginDTO)).thenReturn(user)
 
         // When
@@ -91,7 +91,7 @@ class LoginViewModelTest {
         val email = "test@example.com"
         val password = "password"
         val loginDTO = LoginDTO(email, password)
-        val user = UsuarioDTO(id = 1, nombre = "Test User", email = email, token = "someToken")
+        val user = UsuarioDTO(id = 1, nombre = "Test User", email = email, tieneDescuentoDuoc = false, puntosLevelUp = 0, rol = "USER")
         whenever(repository.login(loginDTO)).thenReturn(user)
         viewModel.login(email, password)
         testDispatcher.scheduler.advanceUntilIdle()
