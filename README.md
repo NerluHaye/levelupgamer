@@ -9,9 +9,9 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 
 ## 📱 Colaboradores 
 
-- **Alexander Bello** – Diseño visual, navegación y animaciones funcionales.  
-- **Nicolás Jerez** – Lógica de validaciones, gestión de estado y recursos nativos.  
-- **Abraham Neira** – Persistencia local, estructura modular (MVVM) y monitoreo.
+- **Alexander Bello** – Logica de validacion, navegación y Backend.  
+- **Nicolás Jerez** – Diseño visual , gestión de estado y recursos nativos.  
+- **Abraham Neira** – estructura modular (MVVM), monitoreo y Pruebas unitarias.
 
 ## 📱 Funcionalidades del proyecto
 
@@ -22,8 +22,8 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 ### Validaciones:
 - Validaciones lógicas manejadas desde `ViewModel`, separadas de la UI.
 
-### Persistencia Local:
-- Base de datos local implementada con **Room** (DAO, Entity y Repository).  
+### Persistencia Remota:
+- Base de datos remota **PostGrade** con sql implementada con aws.  
 - Estructura modular siguiendo el patrón **MVVM**.  
 - Proyecto organizado con carpetas.
 - Control de versiones en **GitHub** y planificación en **Trello**.
@@ -33,8 +33,8 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 - **Registro e inicio de sesión** con verficación local de usuarios.
 
 ### Recursos nativos:
-- **Cámara** integrada para tomar fotos de recibos o productos.
-- **Notificaciones locales** para confirmar el agregado al carrito.
+- **Lector de archivo** integrado para la comprobante de la compra pdf.
+- **Gps** Para confirmar el lugar donde se debe enviar las compras.
 
 ## 📱 Estructura 
 
@@ -60,6 +60,13 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 ### Etapa 5 Recursos Nativos y Animaciones:
 - Pruebas completas de navegación, persistencia y animaciones.  
 - Validación del funcionamiento de los recursos nativos en emulador o dispositivo real.
+
+### Etapa 6 Integracion de Backend y Base de datos:
+- Conexion entre la app mobile y el backend que esta conectando con una base de datos 
+- Comunicacion entre la base de datos para la validacion de productos y usuarios
+- 
+### Etapa 7 Creacion del apk y firma 
+- Finalizacion del proyecto, convirtiendolo en un apk y dando la firma de keystore
 
 ## 📱 Obejtivo del proyecto
 
