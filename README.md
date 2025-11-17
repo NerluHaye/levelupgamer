@@ -67,6 +67,8 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 ### Etapa 7 Creacion del apk y firma 
 - Finalizacion del proyecto, convirtiendolo en un apk y dando la firma de keystore
 
+<img width="687" height="486" alt="Captura de pantalla 2025-11-17 052419" src="https://github.com/user-attachments/assets/33c8ff45-e0fd-4445-94be-0cd2664ad507" />
+
 ## 📱 Objetivo del proyecto
 
 Como equipo, nuestro objetivo es desarrollar **una aplicación móvil funcional y completa**, que refleje un proceso de diseño y una implementación bien aplicado. 
