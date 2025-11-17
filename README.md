@@ -11,7 +11,7 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 
 - **Alexander Bello** – Logica de validacion, navegación y Backend.  
 - **Nicolás Jerez** – Diseño visual , gestión de estado y recursos nativos.  
-- **Abraham Neira** – estructura modular (MVVM), monitoreo y Pruebas unitarias.
+- **Abraham Neira** – Estructura modular (MVVM), monitoreo y Pruebas unitarias.
 
 ## 📱 Funcionalidades del proyecto
 
@@ -64,11 +64,11 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 ### Etapa 6 Integracion de Backend y Base de datos:
 - Conexion entre la app mobile y el backend que esta conectando con una base de datos 
 - Comunicacion entre la base de datos para la validacion de productos y usuarios
-- 
+
 ### Etapa 7 Creacion del apk y firma 
 - Finalizacion del proyecto, convirtiendolo en un apk y dando la firma de keystore
 
-## 📱 Obejtivo del proyecto
+## 📱 Objetivo del proyecto
 
 Como equipo, nuestro objetivo es desarrollar **una aplicación móvil funcional y completa**, que refleje un proceso de diseño y una implementación bien aplicado. 
 Buscamos construir una app **modular, visualmente coherente y usable**, que integre diseño visual, validaciones, persistencia local, animaciones y acceso a recursos nativos.
