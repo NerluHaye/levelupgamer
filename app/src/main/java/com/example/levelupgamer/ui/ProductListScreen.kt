@@ -45,16 +45,6 @@ fun ProductListScreen(
                 .padding(paddingValues)
                 .padding(horizontal = 12.dp)
         ) {
-            Text(
-                text = "Level-Up Gamer",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp)
-            )
-
             if (products.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
