@@ -10,9 +10,9 @@ private val DarkColorScheme = darkColorScheme(
     primary = DepressedGreen,
     secondary = Color.Cyan,
     tertiary = Color.Red,
-    background = Color.Black,    // Color para las tarjetas y otros componentes
-    surfaceVariant = Color(0xFF87CEEB) // Azul cielo
+    background = Color.Black,
 )
+
 
 @Composable
 fun LevelUpGamerTheme(

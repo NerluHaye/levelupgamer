@@ -63,7 +63,8 @@ fun ProductListScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(MaterialTheme.colorScheme.primary)
-                                    .padding(vertical = 8.dp, horizontal = 4.dp)
+                                    .padding(vertical = 8.dp, horizontal = 4.dp),
+                                color = Color.Black,
                             )
                         }
 

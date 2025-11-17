@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 fun PaymentScreen(
     cartItems: List<CartItem>,
     totalAmount: Double,
+    onPaymentSuccess1: String,
     onPaymentSuccess: () -> Unit,
     onBack: () -> Unit
 
@@ -74,6 +75,14 @@ fun PaymentScreen(
         ) {
             Text("Total a Pagar:", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
             Text("$${totalAmount}", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
+        }
+
+        // 20% Descuento usuarios DUOC
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ){
+            Text("$onPaymentSuccess1", fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }
 
         Spacer(modifier = Modifier.weight(1f))
@@ -131,7 +140,7 @@ fun PaymentScreen(
                 .height(50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF22C55E))
         ) {
-            Text("Pagar Ahora", fontSize = 18.sp, color = Color.White)
+            Text("Pagar Ahora", fontSize = 18.sp, color = Color.Black)
         }
 
         Spacer(modifier = Modifier.height(8.dp))

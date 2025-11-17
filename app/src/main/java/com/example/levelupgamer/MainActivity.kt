@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.levelupgamer.data.remote.RetrofitClient
-import com.example.levelupgamer.data.remote.model.UsuarioDTO
 import com.example.levelupgamer.data.repository.AuthRepository
 import com.example.levelupgamer.data.repository.ProductRepository
 import com.example.levelupgamer.ui.*
@@ -52,7 +51,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LevelUpGamerTheme(darkTheme = true) {
+            LevelUpGamerTheme {
                 val apiService = RetrofitClient.apiService
                 val productRepository = remember { ProductRepository(apiService) }
                 val authRepository = remember { AuthRepository(apiService) }
@@ -82,7 +81,7 @@ class MainActivity : ComponentActivity() {
                                 icon = {
                                     Icon(Icons.Default.AccountCircle, contentDescription = "Usuario")
                                 },
-                                selected = false, // Deberías manejar el estado 'selected' dinámicamente
+                                selected = false,
                                 onClick = {
                                     screen = if (isLoggedIn) Screen.Profile else Screen.Login
                                     scope.launch { drawerState.close() }
@@ -125,7 +124,14 @@ class MainActivity : ComponentActivity() {
                                 is Screen.Login -> LoginScreen(loginViewModel = loginViewModel, onLoginSuccess = { screen = Screen.List }, onRegisterClick = { screen = Screen.Register })
                                 is Screen.Register -> RegisterScreen(registerViewModel = registerViewModel, onRegisterSuccess = { screen = Screen.Login }, onLoginClick = { screen = Screen.Login })
                                 is Screen.Payment -> { val cartItems = productViewModel.cartItems.collectAsState().value
-                                    PaymentScreen(cartItems = cartItems, totalAmount = cartItems.sumOf { it.product.precio * it.cantidad }, onBack = { screen = Screen.Cart }, onPaymentSuccess = { productViewModel.clearCart(); screen = Screen.PaymentSuccess })
+                                    val subtotal = cartItems.sumOf { it.product.precio * it.cantidad }.toDouble()
+                                    val tieneDescuento = user?.tieneDescuentoDuoc ?: false
+                                    val totalFinal = if (tieneDescuento) {
+                                        subtotal * 0.80 // ¡Aplica el 20% de descuento!
+                                    } else {
+                                        subtotal
+                                    }
+                                    PaymentScreen(cartItems = cartItems, totalAmount = totalFinal, onPaymentSuccess1 = if (user?.tieneDescuentoDuoc == true) {"20% de descuento a usuarios DUOC"} else {"sin descuentos aplicables"}, onBack = { screen = Screen.Cart }, onPaymentSuccess = { productViewModel.clearCart(); screen = Screen.PaymentSuccess })
                                 }
                                 is Screen.Nosotros -> NosotrosScreen(onBack = { screen = Screen.List })
                                 is Screen.Profile -> ProfileScreen(loginViewModel = loginViewModel, onBack = { screen = Screen.List }, onLogout = { loginViewModel.logout(); screen = Screen.List })
