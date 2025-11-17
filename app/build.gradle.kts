@@ -121,4 +121,6 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+
 }
