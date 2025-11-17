@@ -9,9 +9,9 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 
 ## 📱 Colaboradores 
 
-- **Alexander Bello** – Logica de validacion, Navegación y Backend.  
-- **Nicolás Jerez** – Diseño visual , Gestión de estado y Recursos nativos.  
-- **Abraham Neira** – Estructura modular (MVVM), Monitoreo y Pruebas unitarias.
+- **Alexander Bello** – Logica de validacion, navegación y Backend.  
+- **Nicolás Jerez** – Diseño visual , gestión de estado y recursos nativos.  
+- **Abraham Neira** – estructura modular (MVVM), monitoreo y Pruebas unitarias.
 
 ## 📱 Funcionalidades del proyecto
 
@@ -64,7 +64,6 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 ### Etapa 6 Integracion de Backend y Base de datos:
 - Conexion entre la app mobile y el backend que esta conectando con una base de datos 
 - Comunicacion entre la base de datos para la validacion de productos y usuarios
-
 ### Etapa 7 Creacion del apk y firma 
 - Finalizacion del proyecto, convirtiendolo en un apk y dando la firma de keystore
 
@@ -78,11 +77,12 @@ Buscamos construir una app **modular, visualmente coherente y usable**, que inte
 1. Clonar el repositorio desde GitHub:  
    ```bash
    git clone https://github.com/tuusuario/levelupgamer.git
+2. Por la implementación de Ngrok debe ejecurtase primero el backend, luego Ngrok( escribir "ngrok http 8080" en la terminal ).
    
-2. Abrir el proyecto en Android Studio.
+3. Abrir el proyecto en Android Studio.
+   
+4. Sincronizar las dependencias de Gradle.
 
-3. Sincronizar las dependencias de Gradle.
+5. Ejecutar el emulador o conectar un dispositivo físico.
 
-4. Ejecutar el emulador o conectar un dispositivo físico.
-
-5. Ejecutar la aplicación desde `MainActivity.kt`.
+6. Ejecutar la aplicación desde `MainActivity.kt`.
