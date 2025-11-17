@@ -51,8 +51,6 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
             excludes += "META-INF/DEPENDENCIES"
             excludes += "META-INF/LICENSE"
-            excludes += "META-INF/LICENSE.md"
-            excludes += "META-INF/LICENSE-notice.md"
             excludes += "META-INF/LICENSE.txt"
             excludes += "META-INF/license.txt"
             excludes += "META-INF/NOTICE"
@@ -88,9 +86,16 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // Dependencias para Pruebas Unitarias
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+    testImplementation("org.mockito:mockito-core:4.5.1")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+
 
     androidTestImplementation ("androidx.compose.ui:ui-test-junit4:1.7.0")
     debugImplementation ("androidx.compose.ui:ui-test-manifest:1.7.0")
+    androidTestImplementation("org.mockito:mockito-android:4.5.1") // Para mocks en AndroidTest
 
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
     implementation("com.google.firebase:firebase-firestore-ktx")
@@ -115,22 +120,5 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.7.0")
 
     implementation("io.coil-kt:coil-compose:2.6.0")
-
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-
-    // Para el mocking del ViewModel
-    // Si usas MockK:
-    testImplementation("io.mockk:mockk:1.13.11") // Versión de ejemplo
-    androidTestImplementation("io.mockk:mockk-android:1.13.11") // Versión de ejemplo
-
-    // Para testear ViewModel
-    testImplementation("androidx.arch.core:core-testing:2.2.0")
-
-    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
-
-    // Si usas MockK con corrutinas (que es tu caso)
-    androidTestImplementation("io.mockk:mockk-android:1.13.8")
-
 
 }
