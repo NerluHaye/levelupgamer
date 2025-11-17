@@ -1,7 +1,7 @@
 package com.example.levelupgamer.ui
 
-import android.util.Log
-import androidx.compose.foundation.Image
+import com.example.levelupgamer.R
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,18 +12,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.levelupgamer.model.Product
 import com.example.levelupgamer.viewmodel.ProductViewModel
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProductListScreen(
     productViewModel: ProductViewModel,
-    onOpenDetail: (Int) -> Unit,
+    onOpenDetail: (Long) -> Unit,
     onOpenCart: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -31,117 +34,123 @@ fun ProductListScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        Log.d("ProductList", "ProductListScreen composed, products=${products.size}")
-    }
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+    ) { paddingValues ->
 
-    val backgroundColor = Color(0xFF1F2937) // gris azulado medio
-    val textColor = Color(0xFFE5E7EB) // texto claro
-    val buttonGreen = Color(0xFF22C55E)
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(backgroundColor)
-            .padding(12.dp)
-    ) {
-        // Snackbar
-        Box {
-            SnackbarHost(hostState = snackbarHostState)
-        }
-
-        // Header
-        Text(
-            text = "Productos",
-            fontSize = 28.sp,
-            color = textColor,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 12.dp)
-        )
-
-        // Lista de productos
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp) // espaciado uniforme entre items
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 12.dp)
         ) {
-            items(products) { product ->
-                ProductItem(
-                    product = product,
-                    onOpenDetail = onOpenDetail,
-                    onAddToCart = {
-                        productViewModel.addToCart(product)
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("${product.nombre} añadido al carrito")
+            if (products.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(bottom = 16.dp)
+                ) {
+                    products.groupBy { it.nombreCategoria }.forEach { (category, productsInCategory) ->
+                        stickyHeader {
+                            Text(
+                                text = category,
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.primary)
+                                    .padding(vertical = 8.dp, horizontal = 4.dp),
+                                color = Color.Black,
+                            )
                         }
-                    },
-                    backgroundColor = backgroundColor,
-                    textColor = textColor,
-                    buttonColor = buttonGreen
-                )
+
+                        items(productsInCategory) { product ->
+                            ProductItem(
+                                product = product,
+                                onOpenDetail = onOpenDetail,
+                                onAddToCart = {
+                                    productViewModel.addToCart(product)
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar("${product.nombre} añadido al carrito")
+                                    }
+                                }
+                            )
+                        }
+                    }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun ProductItem(
+internal fun ProductItem(
     product: Product,
-    onOpenDetail: (Int) -> Unit,
-    onAddToCart: () -> Unit,
-    backgroundColor: Color,
-    textColor: Color,
-    buttonColor: Color
+    onOpenDetail: (Long) -> Unit,
+    onAddToCart: () -> Unit
 ) {
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = backgroundColor)
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onOpenDetail(product.id) }, 
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            if (product.imageRes != null) {
-                Image(
-                    painter = painterResource(id = product.imageRes),
+            if (product.imagenUrl != null) {
+                AsyncImage(
+                    model = product.imagenUrl,
                     contentDescription = product.nombre,
                     modifier = Modifier
-                        .size(64.dp)
-                        .clickable { onOpenDetail(product.id) }
+                        .fillMaxWidth()
+                        .height(140.dp),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.logolevelupgamer),
+                    error = painterResource(id = R.drawable.logolevelupgamer)
                 )
+            } else {
+                // Muestra un placeholder si no hay imagen
+                Box(modifier = Modifier.fillMaxWidth().height(140.dp), contentAlignment = Alignment.Center) {
+                    Icon(painter = painterResource(id = R.drawable.logolevelupgamer), contentDescription = null, modifier = Modifier.size(70.dp))
+                }
             }
 
             Column(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 12.dp)
+                    .fillMaxWidth()
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     text = product.nombre,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = textColor,
-                    fontSize = 18.sp
+                    overflow = TextOverflow.Ellipsis
                 )
-                Text(
-                    text = "$${product.precio}",
-                    color = buttonColor,
-                    fontSize = 16.sp
-                )
-            }
 
-            Button(
-                onClick = onAddToCart,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = buttonColor,
-                    contentColor = Color.White
-                )
-            ) {
-                Text(text = "Añadir")
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "$${product.precio}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Button(
+                        onClick = onAddToCart,
+                    ) {
+                        Text(text = "Añadir")
+                    }
+                }
             }
         }
     }
