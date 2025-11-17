@@ -5,8 +5,9 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
+
 private val DarkColorScheme = darkColorScheme(
-    primary = Color.Green,
+    primary = DepressedGreen,
     secondary = Color.Cyan,
     tertiary = Color.Red,
     background = Color.Black,    // Color para las tarjetas y otros componentes
