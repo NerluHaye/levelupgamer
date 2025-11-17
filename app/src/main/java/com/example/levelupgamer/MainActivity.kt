@@ -65,19 +65,27 @@ class MainActivity : ComponentActivity() {
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
 
+                //Menu lateral
                 ModalNavigationDrawer(
                     drawerState = drawerState,
                     drawerContent = {
                         ModalDrawerSheet(drawerContainerColor = MaterialTheme.colorScheme.background) {
                             Spacer(Modifier.height(12.dp))
+                            //Iniciar sesion
                             NavigationDrawerItem(
-                                label = { Text("Blog") },
-                                selected = false,
-                                onClick = { 
-                                    screen = Screen.Blog
+                                label = {
+                                    Text(if (isLoggedIn) "Mi Perfil" else "Iniciar Sesión")
+                                },
+                                icon = {
+                                    Icon(Icons.Default.AccountCircle, contentDescription = "Usuario")
+                                },
+                                selected = false, // Deberías manejar el estado 'selected' dinámicamente
+                                onClick = {
+                                    screen = if (isLoggedIn) Screen.Profile else Screen.Login
                                     scope.launch { drawerState.close() }
                                 }
                             )
+                            //Nosotros
                             NavigationDrawerItem(
                                 label = { Text("Sobre Nosotros") },
                                 selected = false,
@@ -102,11 +110,6 @@ class MainActivity : ComponentActivity() {
                                     IconButton(onClick = { screen = Screen.Cart }) {
                                         Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito")
                                     }
-                                    IconButton(onClick = {
-                                        if (isLoggedIn) screen = Screen.Profile else screen = Screen.Login
-                                    }) {
-                                        Icon(Icons.Default.AccountCircle, contentDescription = "Usuario")
-                                    }
                                 }
                             )
                         }
@@ -122,9 +125,9 @@ class MainActivity : ComponentActivity() {
                                     val cartItems = productViewModel.cartItems.collectAsState().value
                                     PaymentScreen(cartItems = cartItems, totalAmount = cartItems.sumOf { it.product.precio * it.cantidad }, onBack = { screen = Screen.Cart }, onPaymentSuccess = { productViewModel.clearCart(); screen = Screen.List })
                                 }
-                                is Screen.Blog -> BlogScreen(onBack = { screen = Screen.List })
                                 is Screen.Nosotros -> NosotrosScreen(onBack = { screen = Screen.List })
                                 is Screen.Profile -> ProfileScreen(loginViewModel = loginViewModel, onBack = { screen = Screen.List }, onLogout = { loginViewModel.logout(); screen = Screen.List })
+                                else -> {}
                             }
                         }
                     }
