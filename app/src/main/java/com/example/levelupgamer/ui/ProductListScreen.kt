@@ -111,9 +111,9 @@ internal fun ProductItem(
         Column(
             modifier = Modifier.fillMaxWidth()
         ) {
-            if (product.imageUrl != null) {
+            if (product.imagenUrl != null) {
                 AsyncImage(
-                    model = product.imageUrl,
+                    model = product.imagenUrl,
                     contentDescription = product.nombre,
                     modifier = Modifier
                         .fillMaxWidth()

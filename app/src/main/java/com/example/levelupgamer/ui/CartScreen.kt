@@ -73,9 +73,9 @@ fun CartScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start
                     ) {
-                        if (item.product.imageUrl != null) {
+                        if (item.product.imagenUrl != null) {
                             AsyncImage(
-                                model = item.product.imageUrl,
+                                model = item.product.imagenUrl,
                                 contentDescription = item.product.nombre,
                                 modifier = Modifier.size(64.dp)
                             )

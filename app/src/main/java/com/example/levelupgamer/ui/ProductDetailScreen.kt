@@ -60,9 +60,9 @@ fun ProductDetailScreen(
         } else {
             product?.let { currentProduct ->
                 Column(modifier = Modifier.fillMaxSize()) {
-                    if (currentProduct.imageUrl != null) {
+                    if (currentProduct.imagenUrl != null) {
                         AsyncImage(
-                            model = currentProduct.imageUrl,
+                            model = currentProduct.imagenUrl,
                             contentDescription = currentProduct.nombre,
                             modifier = Modifier
                                 .height(200.dp)

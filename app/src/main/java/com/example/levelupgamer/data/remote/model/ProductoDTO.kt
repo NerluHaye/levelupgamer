@@ -10,6 +10,6 @@ data class ProductoDTO(
     val precio: BigDecimal,
     val stock: Int,
     val nombreCategoria: String,
-    val imageUrl: String
+    val imagenUrl: String
 )
 
