@@ -1,5 +1,6 @@
 package com.example.levelupgamer.data.remote
 
+import com.example.levelupgamer.data.remote.model.BlogDTO
 import com.example.levelupgamer.data.remote.model.CategoriaDTO
 import com.example.levelupgamer.data.remote.model.LoginDTO
 import com.example.levelupgamer.data.remote.model.ProductoDTO
@@ -40,4 +41,14 @@ interface ApiService {
 
     @GET("/api/categorias/{id}")
     suspend fun getCategoriaById(@Path("id") id: Long): CategoriaDTO
+    // --- BLOGS ---
+    @GET("/api/v1/blog")
+    suspend fun getAllBlogs(): List<BlogDTO>
+
+    @GET("/api/v1/blog/{id}")
+    suspend fun getBlogById(@Path("id") id: Long): BlogDTO
+
+    @POST("/api/v1/blog")
+    suspend fun createBlog(@Body blogDto: BlogDTO): BlogDTO
+
 }
