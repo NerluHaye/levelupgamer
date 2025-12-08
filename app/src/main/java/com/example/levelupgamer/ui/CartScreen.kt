@@ -106,7 +106,7 @@ fun CartScreen(
                             )
                         }
 
-                        IconButton(onClick = { productViewModel.removeFromCart(item.product) }) {
+                        IconButton(onClick = { productViewModel.removeFromCart(item.id) }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "Eliminar",

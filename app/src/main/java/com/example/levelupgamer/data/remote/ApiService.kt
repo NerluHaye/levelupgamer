@@ -1,5 +1,6 @@
 package com.example.levelupgamer.data.remote
 
+import retrofit2.http.Query
 import com.example.levelupgamer.data.remote.model.BlogDTO
 import com.example.levelupgamer.data.remote.model.CategoriaDTO
 import com.example.levelupgamer.data.remote.model.LoginDTO
@@ -10,6 +11,10 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import com.example.levelupgamer.data.remote.model.CarritoDTO
+import com.example.levelupgamer.data.remote.model.CarritoItemDetalleDTO
+import retrofit2.http.DELETE
+import retrofit2.http.PUT
 
 interface ApiService {
 
@@ -50,5 +55,21 @@ interface ApiService {
 
     @POST("/api/v1/blog")
     suspend fun createBlog(@Body blogDto: BlogDTO): BlogDTO
+    // --- CARRITO v2 ---
 
+
+    @GET("/api/v2/carrito")
+    suspend fun getCarrito(): CarritoDTO
+
+    @POST("/api/v2/carrito/agregar")
+    suspend fun agregarItemAlCarrito(@Body itemDto: CarritoItemDetalleDTO): CarritoDTO
+
+    @DELETE("/api/v2/carrito/remover/{itemId}")
+    suspend fun removerItemDelCarrito(@Path("itemId") itemId: Long): CarritoDTO
+
+    @PUT("/api/v2/carrito/actualizar/{itemId}")
+    suspend fun actualizarCantidadItem(
+        @Path("itemId") itemId: Long,
+        @Query("nuevaCantidad") nuevaCantidad: Int
+    ): CarritoDTO
 }

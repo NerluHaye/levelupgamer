@@ -24,6 +24,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.levelupgamer.data.remote.RetrofitClient
 import com.example.levelupgamer.data.repository.AuthRepository
 import com.example.levelupgamer.data.repository.BlogRepository
+import com.example.levelupgamer.data.repository.CarritoRepository
 import com.example.levelupgamer.data.repository.ProductRepository
 import com.example.levelupgamer.ui.*
 import com.example.levelupgamer.ui.theme.LevelUpGamerTheme
@@ -69,7 +70,13 @@ class MainActivity : ComponentActivity() {
                     blogRepository
                 )
                 )
-                val productViewModel: ProductViewModel = viewModel(factory = ProductViewModelFactory(productRepository))
+                val carritoRepository: CarritoRepository = remember {
+                    CarritoRepository(
+                        apiService,
+                        productRepository
+                    )
+                }
+                val productViewModel: ProductViewModel = viewModel(factory = ProductViewModelFactory(productRepository, carritoRepository))
                 val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(authRepository))
                 val registerViewModel: RegisterViewModel = viewModel(factory = RegisterViewModelFactory(authRepository))
 
