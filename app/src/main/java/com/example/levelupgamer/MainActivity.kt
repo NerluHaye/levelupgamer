@@ -16,14 +16,19 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.levelupgamer.data.remote.RetrofitClient
 import com.example.levelupgamer.data.repository.AuthRepository
+import com.example.levelupgamer.data.repository.BlogRepository
 import com.example.levelupgamer.data.repository.ProductRepository
 import com.example.levelupgamer.ui.*
 import com.example.levelupgamer.ui.theme.LevelUpGamerTheme
+import com.example.levelupgamer.viewmodel.BlogViewModel
+import com.example.levelupgamer.viewmodel.BlogViewModelFactory
 import com.example.levelupgamer.viewmodel.LoginViewModel
 import com.example.levelupgamer.viewmodel.LoginViewModelFactory
 import com.example.levelupgamer.viewmodel.ProductViewModel
@@ -56,7 +61,11 @@ class MainActivity : ComponentActivity() {
                 val apiService = RetrofitClient.apiService
                 val productRepository = remember { ProductRepository(apiService) }
                 val authRepository = remember { AuthRepository(apiService) }
-
+                val blogRepository = remember { BlogRepository(apiService) }
+                val blogViewModel : BlogViewModel = viewModel(factory = BlogViewModelFactory(
+                    blogRepository
+                )
+                )
                 val productViewModel: ProductViewModel = viewModel(factory = ProductViewModelFactory(productRepository))
                 val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(authRepository))
                 val registerViewModel: RegisterViewModel = viewModel(factory = RegisterViewModelFactory(authRepository))
@@ -147,7 +156,9 @@ class MainActivity : ComponentActivity() {
                                 is Screen.Profile -> ProfileScreen(loginViewModel = loginViewModel, onBack = { screen = Screen.List }, onLogout = { loginViewModel.logout(); screen = Screen.List })
                                 is Screen.PaymentSuccess -> PaymentSuccessScreen (onReturnHome = { screen = Screen.List }
                                 )
-                                is Screen.Blog -> BlogScreen()
+
+                                is Screen.Blog -> BlogScreen( viewModel = blogViewModel, onBlogClick = { blogId -> Toast.makeText(this@MainActivity, "Ir al detalle del blog ID: $blogId", Toast.LENGTH_SHORT).show() }, onAddBlogClick = { Toast.makeText(this@MainActivity, "Placeholder, todavia no esta preparado blog", Toast.LENGTH_SHORT).show() } )
+
 
                                 else -> {}
                             }
