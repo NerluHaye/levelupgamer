@@ -43,6 +43,7 @@ sealed class Screen {
     object Nosotros : Screen()
     object Profile : Screen()
     object PaymentSuccess : Screen()
+    object Blog: Screen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,6 +97,15 @@ class MainActivity : ComponentActivity() {
                                     scope.launch { drawerState.close() }
                                 }
                             )
+                            //Blog
+                            NavigationDrawerItem(
+                                label = { Text("Blog") },
+                                selected = false,
+                                onClick = {
+                                    screen = Screen.Blog
+                                    scope.launch { drawerState.close() }
+                                }
+                            )
                         }
                     }
                 ) {
@@ -137,6 +147,7 @@ class MainActivity : ComponentActivity() {
                                 is Screen.Profile -> ProfileScreen(loginViewModel = loginViewModel, onBack = { screen = Screen.List }, onLogout = { loginViewModel.logout(); screen = Screen.List })
                                 is Screen.PaymentSuccess -> PaymentSuccessScreen (onReturnHome = { screen = Screen.List }
                                 )
+                                is Screen.Blog -> BlogScreen()
 
                                 else -> {}
                             }
