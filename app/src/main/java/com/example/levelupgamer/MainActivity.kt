@@ -1,5 +1,6 @@
 package com.example.levelupgamer
 
+
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -35,10 +36,12 @@ import com.example.levelupgamer.viewmodel.BlogViewModelFactory
 import com.example.levelupgamer.viewmodel.LoginViewModel
 import com.example.levelupgamer.viewmodel.LoginViewModelFactory
 import com.example.levelupgamer.viewmodel.ProductViewModel
-import com.example.levelupgamer.viewmodel.ProductViewModelFactory
 import com.example.levelupgamer.viewmodel.RegisterViewModel
 import com.example.levelupgamer.viewmodel.RegisterViewModelFactory
 import kotlinx.coroutines.launch
+import com.example.levelupgamer.viewmodel.CartViewModel
+import com.example.levelupgamer.viewmodel.CartViewModelFactory
+import com.example.levelupgamer.viewmodel.ProductViewModelFactory
 
 sealed class Screen {
     object List : Screen()
@@ -76,8 +79,12 @@ class MainActivity : ComponentActivity() {
                         productRepository
                     )
                 }
-                val productViewModel: ProductViewModel = viewModel(factory = ProductViewModelFactory(productRepository, carritoRepository))
+                val productViewModel: ProductViewModel = viewModel(factory = ProductViewModelFactory(
+                    productRepository
+                )
+                )
                 val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(authRepository))
+                val cartViewModel: CartViewModel = viewModel(factory = CartViewModelFactory(carritoRepository))
                 val registerViewModel: RegisterViewModel = viewModel(factory = RegisterViewModelFactory(authRepository))
 
                 var screen by remember { mutableStateOf<Screen>(Screen.List) }
@@ -152,12 +159,12 @@ class MainActivity : ComponentActivity() {
                     ) { innerPadding ->
                         Box(modifier = Modifier.padding(innerPadding)) {
                             when (val currentScreen = screen) {
-                                is Screen.List -> ProductListScreen(productViewModel = productViewModel, onOpenDetail = { productId -> screen = Screen.Detail(productId) }, onOpenCart = { screen = Screen.Cart })
-                                is Screen.Detail -> ProductDetailScreen(productId = currentScreen.productId, productViewModel = productViewModel, onBack = { screen = Screen.List }, onOpenCart = { screen = Screen.Cart })
-                                is Screen.Cart -> CartScreen(productViewModel = productViewModel, onBack = { screen = Screen.List }, onProceedToPayment = { run { if (isLoggedIn) screen = Screen.Payment else Toast.makeText(this@MainActivity, "Debes iniciar sesión para pagar", Toast.LENGTH_SHORT).show() } })
+                                is Screen.List -> ProductListScreen(productViewModel = productViewModel, cartViewModel = cartViewModel, onOpenDetail = { productId -> screen = Screen.Detail(productId) }, onOpenCart = { screen = Screen.Cart })
+                                is Screen.Detail -> ProductDetailScreen(productId = currentScreen.productId, productViewModel = productViewModel, cartViewModel = cartViewModel, onBack = { screen = Screen.List }, onOpenCart = { screen = Screen.Cart })
+                                is Screen.Cart -> CartScreen(cartViewModel = cartViewModel, onBack = { screen = Screen.List }, onProceedToPayment = { run { if (isLoggedIn) screen = Screen.Payment else Toast.makeText(this@MainActivity, "Debes iniciar sesión para pagar", Toast.LENGTH_SHORT).show() } })
                                 is Screen.Login -> LoginScreen(loginViewModel = loginViewModel, onLoginSuccess = { screen = Screen.List }, onRegisterClick = { screen = Screen.Register })
                                 is Screen.Register -> RegisterScreen(registerViewModel = registerViewModel, onRegisterSuccess = { screen = Screen.Login }, onLoginClick = { screen = Screen.Login })
-                                is Screen.Payment -> { val cartItems = productViewModel.cartItems.collectAsState().value
+                                is Screen.Payment -> { val cartItems = cartViewModel.cartItems.collectAsState().value
                                     val subtotal = cartItems.sumOf { it.product.precio * it.cantidad }.toDouble()
                                     val tieneDescuento = user?.tieneDescuentoDuoc ?: false
                                     val totalFinal = if (tieneDescuento) {
@@ -165,7 +172,7 @@ class MainActivity : ComponentActivity() {
                                     } else {
                                         subtotal
                                     }
-                                    PaymentScreen(cartItems = cartItems, totalAmount = totalFinal, onPaymentSuccess1 = if (user?.tieneDescuentoDuoc == true) {"20% de descuento a usuarios DUOC"} else {"sin descuentos aplicables"}, onBack = { screen = Screen.Cart }, onPaymentSuccess = { productViewModel.clearCart(); screen = Screen.PaymentSuccess })
+                                    PaymentScreen(cartItems = cartItems, totalAmount = totalFinal, onPaymentSuccess1 = if (user?.tieneDescuentoDuoc == true) {"20% de descuento a usuarios DUOC"} else {"sin descuentos aplicables"}, onBack = { screen = Screen.Cart }, onPaymentSuccess = { cartViewModel.clearCart(); screen = Screen.PaymentSuccess })
                                 }
                                 is Screen.Nosotros -> NosotrosScreen(onBack = { screen = Screen.List })
                                 is Screen.Profile -> ProfileScreen(loginViewModel = loginViewModel, onBack = { screen = Screen.List }, onLogout = { loginViewModel.logout(); screen = Screen.List })

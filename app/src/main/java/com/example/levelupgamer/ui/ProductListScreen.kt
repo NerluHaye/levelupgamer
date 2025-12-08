@@ -17,8 +17,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.example.levelupgamer.model.Product
+import com.example.levelupgamer.viewmodel.CartViewModel // <-- ¡Importa el CartViewModel!
 import com.example.levelupgamer.viewmodel.ProductViewModel
 import kotlinx.coroutines.launch
 
@@ -26,11 +28,13 @@ import kotlinx.coroutines.launch
 @Composable
 fun ProductListScreen(
     productViewModel: ProductViewModel,
+    cartViewModel: CartViewModel, // <-- ¡1. Añade el CartViewModel a los parámetros!
     onOpenDetail: (Long) -> Unit,
     onOpenCart: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val products by productViewModel.products.collectAsState()
+    // Usamos la versión segura de collectAsState
+    val products by productViewModel.products.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
@@ -72,7 +76,8 @@ fun ProductListScreen(
                                 product = product,
                                 onOpenDetail = onOpenDetail,
                                 onAddToCart = {
-                                    productViewModel.addToCart(product)
+                                    // 2. ¡Llama al ViewModel correcto!
+                                    cartViewModel.addToCart(product.id)
                                     coroutineScope.launch {
                                         snackbarHostState.showSnackbar("${product.nombre} añadido al carrito")
                                     }
@@ -96,7 +101,7 @@ internal fun ProductItem(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onOpenDetail(product.id) }, 
+            .clickable { onOpenDetail(product.id) },
     ) {
         Column(
             modifier = Modifier.fillMaxWidth()
@@ -113,7 +118,6 @@ internal fun ProductItem(
                     error = painterResource(id = R.drawable.logolevelupgamer)
                 )
             } else {
-                // Muestra un placeholder si no hay imagen
                 Box(modifier = Modifier.fillMaxWidth().height(140.dp), contentAlignment = Alignment.Center) {
                     Icon(painter = painterResource(id = R.drawable.logolevelupgamer), contentDescription = null, modifier = Modifier.size(70.dp))
                 }

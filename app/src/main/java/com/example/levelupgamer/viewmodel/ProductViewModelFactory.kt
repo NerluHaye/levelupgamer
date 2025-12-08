@@ -2,19 +2,17 @@ package com.example.levelupgamer.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.levelupgamer.data.repository.CarritoRepository // 1. Se añade la importación
 import com.example.levelupgamer.data.repository.ProductRepository
-class ProductViewModelFactory(
-    private val productRepository: ProductRepository,
-    private val carritoRepository: CarritoRepository
-) : ViewModelProvider.Factory {
 
-    @Suppress("UNCHECKED_CAST")
+class ProductViewModelFactory(
+    private val productRepository: ProductRepository
+) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ProductViewModel::class.java)) {
-            // 3. Se pasan AMBOS repositorios al crear el ViewModel
-            return ProductViewModel(productRepository, carritoRepository) as T
+            @Suppress("UNCHECKED_CAST")
+            // Ahora solo le pasamos el productRepository
+            return ProductViewModel(productRepository) as T
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
+        throw IllegalArgumentException("Clase de ViewModel desconocida")
     }
 }
