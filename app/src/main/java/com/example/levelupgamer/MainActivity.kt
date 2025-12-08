@@ -27,6 +27,8 @@ import com.example.levelupgamer.data.repository.BlogRepository
 import com.example.levelupgamer.data.repository.ProductRepository
 import com.example.levelupgamer.ui.*
 import com.example.levelupgamer.ui.theme.LevelUpGamerTheme
+import com.example.levelupgamer.viewmodel.BlogCreationViewModel
+import com.example.levelupgamer.viewmodel.BlogCreationViewModelFactory
 import com.example.levelupgamer.viewmodel.BlogViewModel
 import com.example.levelupgamer.viewmodel.BlogViewModelFactory
 import com.example.levelupgamer.viewmodel.LoginViewModel
@@ -49,6 +51,7 @@ sealed class Screen {
     object Profile : Screen()
     object PaymentSuccess : Screen()
     object Blog: Screen()
+    object CreateBlog: Screen()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,7 +76,12 @@ class MainActivity : ComponentActivity() {
                 var screen by remember { mutableStateOf<Screen>(Screen.List) }
                 val user by loginViewModel.user.collectAsState()
                 val isLoggedIn = user != null
-
+                val blogCreationViewModel: BlogCreationViewModel = viewModel(
+                    factory = BlogCreationViewModelFactory(
+                        blogRepository,
+                        user?.nombre ?: "Anónimo"
+                    )
+                )
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val scope = rememberCoroutineScope()
 
@@ -157,7 +165,11 @@ class MainActivity : ComponentActivity() {
                                 is Screen.PaymentSuccess -> PaymentSuccessScreen (onReturnHome = { screen = Screen.List }
                                 )
 
-                                is Screen.Blog -> BlogScreen( viewModel = blogViewModel, onBlogClick = { blogId -> Toast.makeText(this@MainActivity, "Ir al detalle del blog ID: $blogId", Toast.LENGTH_SHORT).show() }, onAddBlogClick = { Toast.makeText(this@MainActivity, "Placeholder, todavia no esta preparado blog", Toast.LENGTH_SHORT).show() } )
+                                is Screen.Blog -> { BlogScreen(viewModel = blogViewModel, onBlogClick = { blogId -> Toast.makeText(this@MainActivity, "Ir al detalle del blog ID: $blogId", Toast.LENGTH_SHORT).show() }, onAddBlogClick = { screen = Screen.CreateBlog }) }
+                                is Screen.CreateBlog -> { BlogCreationScreen(onBlogCreated = { blogViewModel.fetchBlogs() }, viewModel = blogCreationViewModel) }
+
+
+
 
 
                                 else -> {}
