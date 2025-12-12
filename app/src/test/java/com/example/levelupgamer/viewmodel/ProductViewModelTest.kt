@@ -157,9 +157,12 @@ class ProductViewModelTest {
 
         val initialCart = listOf(CartItem(product1, 1), CartItem(product2, 2))
 
-        whenever(repository.getCart()).thenReturn(initialCart, emptyList<CartItem>())
+        whenever(repository.getCart())
+            .thenReturn(initialCart)
+            .thenReturn(emptyList<CartItem>())
 
         createViewModel()
+        testDispatcher.scheduler.advanceUntilIdle()
 
         assertEquals(initialCart, viewModel.cartItems.value)
 
