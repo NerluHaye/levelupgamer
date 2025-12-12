@@ -12,24 +12,18 @@ open class ProductRepository(private val apiService: ApiService) {
     open suspend fun getProducts(): List<Product> {
         return try {
             val dtoList = apiService.getAllProductos()
-            Log.d("ProductRepository", "Productu DTO recivido: ${dtoList.size} items")
-            // Imprime los detalles del primer producto para depuración
-            if (dtoList.isNotEmpty()) {
-                Log.d("ProductRepositoryDetail", "First product DTO: ${dtoList.first()}")
-            }
             dtoList.map { dto ->
                 Product(
                     id = dto.id,
                     nombre = dto.nombre,
-                    precio = dto.precio.toDouble(),
+                    precio = dto.precio,
                     nombreCategoria = dto.nombreCategoria,
                     descripcion = dto.descripcion,
                     imagenUrl = dto.imagenUrl
                 )
             }
         } catch (e: Exception) {
-            Log.e("ProductRepository", "ERROR FETCHING PRODUCTS: ", e)
-            emptyList()
+            throw e
         }
     }
 
