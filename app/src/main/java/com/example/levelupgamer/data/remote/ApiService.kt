@@ -20,57 +20,58 @@ interface ApiService {
 
     // --- AUTENTICACIÓN ---
 
-    @POST("api/auth/register")
+    @POST("api/v1/auth/register")
     suspend fun registrarUsuario(@Body registroDTO: RegistroUsuarioDTO): UsuarioDTO
 
-    @POST("api/auth/login")
+    @POST("api/v1/auth/login")
     suspend fun loginUsuario(@Body loginDTO: LoginDTO): UsuarioDTO
 
 
     // --- PRODUCTOS ---
 
-    @GET("/api/productos") // (Añadí la / que faltaba, buena práctica)
+    @GET("api/v1/productos") // (Añadí la / que faltaba, buena práctica)
     suspend fun getAllProductos(): List<ProductoDTO>
 
-    @GET("/api/productos/{id}")
+    @GET("api/v1/productos/{id}")
     suspend fun getProductoById(@Path("id") id: Long): ProductoDTO
 
 
     // --- PRODUCTOS POR CATEGORÍA ---
     // --- No implementado aun ---
-    @GET("/api/productos/categoria/{nombreCategoria}")
+    @GET("api/v1/productos/categoria/{nombreCategoria}")
     suspend fun getProductosByCategoria(@Path("nombreCategoria") nombreCategoria: String): List<ProductoDTO>
 
 
     // --- CATEGORÍAS ---
 
-    @GET("/api/categorias")
+    @GET("api/v1/categorias")
     suspend fun getAllCategorias(): List<CategoriaDTO>
 
-    @GET("/api/categorias/{id}")
+    @GET("/api/v1/categorias/{id}")
     suspend fun getCategoriaById(@Path("id") id: Long): CategoriaDTO
+
     // --- BLOGS ---
-    @GET("/api/v1/blog")
+    @GET("api/v1/blog")
     suspend fun getAllBlogs(): List<BlogDTO>
 
-    @GET("/api/v1/blog/{id}")
-    suspend fun getBlogById(@Path("id") id: Long): BlogDTO
+    @GET("api/v1/blog/{blogId}")
+    suspend fun getBlogById(@Path("blogId") id: Long): BlogDTO
 
-    @POST("/api/v1/blog")
+    @POST("api/v1/blog")
     suspend fun createBlog(@Body blogDto: BlogDTO): BlogDTO
-    // --- CARRITO v2 ---
 
+    // --- CARRITO ---
 
-    @GET("/api/v2/carrito")
+    @GET("api/v1/carrito")
     suspend fun getCarrito(): CarritoDTO
 
-    @POST("/api/v2/carrito/agregar")
+    @POST("api/v1/carrito/agregar")
     suspend fun agregarItemAlCarrito(@Body itemDto: CarritoItemDetalleDTO): CarritoDTO
 
-    @DELETE("/api/v2/carrito/remover/{itemId}")
+    @DELETE("api/v1/carrito/remover/{itemId}")
     suspend fun removerItemDelCarrito(@Path("itemId") itemId: Long): CarritoDTO
 
-    @PUT("/api/v2/carrito/actualizar/{itemId}")
+    @PUT("api/v1/carrito/actualizar/{itemId}")
     suspend fun actualizarCantidadItem(
         @Path("itemId") itemId: Long,
         @Query("nuevaCantidad") nuevaCantidad: Int

@@ -16,7 +16,7 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
     private val _registerState = MutableStateFlow<Result<UsuarioDTO>?>(null)
     val registerState: StateFlow<Result<UsuarioDTO>?> = _registerState.asStateFlow()
 
-    fun register(nombre: String, email: String, password: String, fechaNacimiento: String, codigoReferido: String?) {
+    fun register(nombre: String, email: String, password: String, fechaNacimiento: String) {
         if (nombre.isBlank() || email.isBlank() || password.isBlank() || fechaNacimiento.isBlank()) {
             _registerState.value = Result.Error("Todos los campos obligatorios deben ser rellenados.")
             return
@@ -25,7 +25,7 @@ class RegisterViewModel(private val repository: AuthRepository) : ViewModel() {
         viewModelScope.launch {
             _registerState.value = Result.Loading
             try {
-                val registroDTO = RegistroUsuarioDTO(nombre, email, password, fechaNacimiento, codigoReferido)
+                val registroDTO = RegistroUsuarioDTO(nombre, email, password, fechaNacimiento)
                 val registeredUser = repository.register(registroDTO)
                 _registerState.value = Result.Success(registeredUser)
             } catch (e: Exception) {

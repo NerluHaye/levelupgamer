@@ -110,7 +110,7 @@ fun RegisterContent(
 
         // Botón registrar
         Button(
-            onClick = { viewModel.register(nombre, email, password, fechaNacimiento, null) },
+            onClick = { viewModel.register(nombre, email, password, fechaNacimiento) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
