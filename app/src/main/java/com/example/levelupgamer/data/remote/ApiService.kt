@@ -35,6 +35,9 @@ interface ApiService {
     @GET("/api/productos/{id}")
     suspend fun getProductoById(@Path("id") id: Long): ProductoDTO
 
+
+    // --- PRODUCTOS POR CATEGORÍA ---
+    // --- No implementado aun ---
     @GET("/api/productos/categoria/{nombreCategoria}")
     suspend fun getProductosByCategoria(@Path("nombreCategoria") nombreCategoria: String): List<ProductoDTO>
 

@@ -5,7 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
-    private const val BASE_URL = "https://nonjudicial-blondell-netlike.ngrok-free.dev"
+    private const val BASE_URL = "http://98.93.60.92:5000/"
 
     private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
