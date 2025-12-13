@@ -162,18 +162,26 @@ class MainActivity : ComponentActivity() {
                             when (val currentScreen = screen) {
                                 is Screen.List -> ProductListScreen(productViewModel = productViewModel, cartViewModel = cartViewModel, onOpenDetail = { productId -> screen = Screen.Detail(productId) }, onOpenCart = { screen = Screen.Cart })
                                 is Screen.Detail -> ProductDetailScreen(productId = currentScreen.productId, productViewModel = productViewModel, cartViewModel = cartViewModel, onBack = { screen = Screen.List }, onOpenCart = { screen = Screen.Cart })
-                                is Screen.Cart -> CartScreen(productViewModel = productViewModel, onBack = { screen = Screen.List }, onProceedToPayment = { run { if (isLoggedIn) screen = Screen.Payment else Toast.makeText(this@MainActivity, "Debes iniciar sesión para pagar", Toast.LENGTH_SHORT).show() } })
+                                is Screen.Cart -> CartScreen(cartViewModel = cartViewModel, onBack = { screen = Screen.List }, onProceedToPayment = { run { if (isLoggedIn) screen = Screen.Payment else Toast.makeText(this@MainActivity, "Debes iniciar sesión para pagar", Toast.LENGTH_SHORT).show() } })
+
                                 is Screen.Login -> LoginScreen(loginViewModel = loginViewModel, onLoginSuccess = { screen = Screen.List }, onRegisterClick = { screen = Screen.Register })
                                 is Screen.Register -> RegisterScreen(registerViewModel = registerViewModel, onRegisterSuccess = { screen = Screen.Login }, onLoginClick = { screen = Screen.Login })
-                                is Screen.Payment -> { val cartItems = productViewModel.cartItems.collectAsState().value
-                                    val subtotal = cartItems.sumOf { it.product.precio * it.cantidad }.toDouble()
+
+                                is Screen.Payment -> {
+                                    val cartItems by cartViewModel.cartItems.collectAsState()
+                                    val subtotal by cartViewModel.totalPrice.collectAsState()
                                     val tieneDescuento = user?.tieneDescuentoDuoc ?: false
-                                    val totalFinal = if (tieneDescuento) {
-                                        subtotal * 0.80 // ¡Aplica el 20% de descuento!
-                                    } else {
-                                        subtotal
-                                    }
-                                    PaymentScreen(cartItems = cartItems, totalAmount = totalFinal, onPaymentSuccess1 = if (user?.tieneDescuentoDuoc == true) {"20% de descuento a usuarios DUOC"} else {"sin descuentos aplicables"}, onBack = { screen = Screen.Cart }, onPaymentSuccess = { productViewModel.clearCart(); screen = Screen.PaymentSuccess })
+                                    val totalFinal = if (tieneDescuento) subtotal * 0.80 else subtotal
+                                    PaymentScreen(
+                                        cartItems = cartItems,
+                                        totalAmount = totalFinal,
+                                        onPaymentSuccess1 = if (tieneDescuento) "20% de descuento a usuarios DUOC" else "sin descuentos aplicables",
+                                        onBack = { screen = Screen.Cart },
+                                        onPaymentSuccess = {
+                                            cartViewModel.clearCart()
+                                            screen = Screen.PaymentSuccess
+                                        }
+                                    )
                                 }
                                 is Screen.Nosotros -> NosotrosScreen(onBack = { screen = Screen.List })
                                 is Screen.Profile -> ProfileScreen(loginViewModel = loginViewModel, onBack = { screen = Screen.List }, onLogout = { loginViewModel.logout(); screen = Screen.List })

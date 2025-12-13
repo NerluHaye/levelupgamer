@@ -19,16 +19,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.levelupgamer.viewmodel.CartViewModel
 import com.example.levelupgamer.viewmodel.ProductViewModel
 
 @Composable
 fun CartScreen(
-    productViewModel: ProductViewModel,
+    cartViewModel: CartViewModel,
     onBack: () -> Unit,
     onProceedToPayment: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val cartItems by productViewModel.cartItems.collectAsState()
+    val cartItems by cartViewModel.cartItems.collectAsState()
 
     LaunchedEffect(Unit) {
         Log.d("CartScreen", "CartScreen composed, items=${cartItems.size}")
@@ -105,7 +106,7 @@ fun CartScreen(
                             )
                         }
 
-                        IconButton(onClick = { productViewModel.removeFromCart(item.product) }) {
+                        IconButton(onClick = { cartViewModel.removeFromCart(item.id) }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = "Eliminar",
@@ -125,7 +126,7 @@ fun CartScreen(
             horizontalArrangement = Arrangement.Start
         ){
             // Botón para vaciar el carrito
-            Button(onClick = { productViewModel.clearCart() }, modifier = Modifier.weight(1f).padding(8.dp)) {
+            Button(onClick = { cartViewModel.clearCart() }, modifier = Modifier.weight(1f).padding(8.dp)) {
                 Text(text = "Vaciar carrito", color = Color.Black)
             }
             // Botón para proceder al pago (simulado)

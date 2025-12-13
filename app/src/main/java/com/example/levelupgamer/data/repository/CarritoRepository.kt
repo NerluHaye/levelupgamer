@@ -7,68 +7,71 @@ import com.example.levelupgamer.model.CartItem
 
 class CarritoRepository(
     private val apiService: ApiService,
-    // Necesitamos el ProductRepository para obtener los detalles completos del producto
     private val productRepository: ProductRepository
 ) {
 
-    /**
-     * Obtiene el carrito del backend y lo convierte a una lista de CartItems.
-     */
+    private fun getAuthToken(): String? {
+        val token = TokenRepository.token ?: run {
+            // Log de error si no encontramos el token
+            Log.e("AUTH_TOKEN", "Se intentó usar el CarritoRepository ¡pero el token es NULO!")
+            return null
+        }
+        val authToken = "Bearer $token"
+        // Log para ver el token que estamos a punto de enviar
+        Log.d("AUTH_TOKEN", "Enviando a la API el token: $authToken")
+        return authToken
+    }
+
     suspend fun getCarritoItems(): List<CartItem> {
+        val authToken = getAuthToken() ?: return emptyList()
         return try {
-            val carritoDto = apiService.getCarrito()
-            // Mapeamos cada item del DTO a un CartItem de nuestro modelo
+            // Llama a la API pasándole el token
+            val carritoDto = apiService.getCarrito(authToken)
             carritoDto.items.mapNotNull { itemDto ->
                 val product = productRepository.getProductById(itemDto.productoId)
                 if (product != null) {
                     CartItem(
-                        id = itemDto.id ?: 0L, // El ID que viene del DTO del carrito
+                        id = itemDto.id ?: 0L,
                         product = product,
                         cantidad = itemDto.cantidad
                     )
-                } else {
-                    null // Si el producto no se encuentra, lo ignoramos
-                }
+                } else { null }
             }
         } catch (e: Exception) {
             Log.e("CarritoRepository", "Error al obtener el carrito: ", e)
-            emptyList() // Si hay un error, devolvemos una lista vacía
+            emptyList()
         }
     }
 
-    /**
-     * Agrega un producto al carrito en el backend.
-     */
     suspend fun agregarItemAlCarrito(productoId: Long, cantidad: Int): Boolean {
+        val authToken = getAuthToken() ?: return false
+        Log.d("CARRITO_REPO", "Intentando agregar producto ID: $productoId") // <-- AÑADE ESTO
         return try {
             val itemDto = CarritoItemDetalleDTO(productoId = productoId, cantidad = cantidad)
-            apiService.agregarItemAlCarrito(itemDto)
-            true // Éxito
-        } catch (e: Exception) {
-            Log.e("CarritoRepository", "Error al agregar item al carrito: ", e)
-            false // Fallo
-        }
-    }
-
-    /**
-     * Remueve un item del carrito en el backend.
-     */
-    suspend fun removerItemDelCarrito(itemId: Long): Boolean {
-        return try {
-            apiService.removerItemDelCarrito(itemId)
+            apiService.agregarItemAlCarrito(authToken, itemDto)
+            Log.d("CARRITO_REPO", "Producto ID: $productoId agregado (sin excepción).") // <-- Y ESTO
             true
         } catch (e: Exception) {
-            Log.e("CarritoRepository", "Error al remover item del carrito: ", e)
+            Log.e("CARRITO_REPO", "Error al agregar item: ", e) // <-- CAMBIA EL TAG PARA COHERENCIA
             false
         }
     }
 
-    /**
-     * Actualiza la cantidad de un item en el carrito en el backend.
-     */
-    suspend fun actualizarCantidadItem(itemId: Long, nuevaCantidad: Int): Boolean {
+    suspend fun removerItemDelCarrito(itemId: Long): Boolean {
+        val authToken = getAuthToken() ?: return false
         return try {
-            apiService.actualizarCantidadItem(itemId, nuevaCantidad)
+            apiService.removerItemDelCarrito(authToken, itemId)
+            true
+        } catch (e: Exception) {
+            Log.e("CarritoRepository", "Error al remover item: ", e)
+            false
+        }
+    }
+
+    suspend fun actualizarCantidadItem(itemId: Long, nuevaCantidad: Int): Boolean {
+        val authToken = getAuthToken() ?: return false
+        return try {
+            apiService.actualizarCantidadItem(authToken, itemId, nuevaCantidad)
             true
         } catch (e: Exception) {
             Log.e("CarritoRepository", "Error al actualizar cantidad: ", e)

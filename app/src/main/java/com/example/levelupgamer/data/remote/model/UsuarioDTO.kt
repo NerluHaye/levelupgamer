@@ -6,5 +6,6 @@ data class UsuarioDTO (
     val email: String,
     val tieneDescuentoDuoc: Boolean,
     val puntosLevelUp: Int,
-    val rol: String
+    val rol: String,
+    val token: String?
 )

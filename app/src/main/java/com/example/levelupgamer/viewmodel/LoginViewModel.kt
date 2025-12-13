@@ -10,6 +10,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import com.example.levelupgamer.data.repository.TokenRepository
+import android.util.Log
+
+
 
 class LoginViewModel(private val repository: AuthRepository) : ViewModel() {
     private val _user = MutableStateFlow<UsuarioDTO?>(null)
@@ -24,6 +28,12 @@ class LoginViewModel(private val repository: AuthRepository) : ViewModel() {
             try {
                 val loginDTO = LoginDTO(email, password)
                 val loggedInUser = repository.login(loginDTO)
+                loggedInUser?.token?.let{tokenRecibido ->
+
+                    Log.d("AUTH_TOKEN", "Token guardado: $tokenRecibido")
+                    TokenRepository.token = tokenRecibido
+                }
+
                 _user.value = loggedInUser
                 _loginState.value = Result.Success(loggedInUser)
             } catch (e: Exception) {
@@ -33,6 +43,7 @@ class LoginViewModel(private val repository: AuthRepository) : ViewModel() {
     }
 
     fun logout() {
+        TokenRepository.token = null
         _user.value = null
         _loginState.value = null
     }

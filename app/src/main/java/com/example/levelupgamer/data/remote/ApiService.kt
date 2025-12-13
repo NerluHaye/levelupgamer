@@ -14,6 +14,7 @@ import retrofit2.http.Path
 import com.example.levelupgamer.data.remote.model.CarritoDTO
 import com.example.levelupgamer.data.remote.model.CarritoItemDetalleDTO
 import retrofit2.http.DELETE
+import retrofit2.http.Header
 import retrofit2.http.PUT
 
 interface ApiService {
@@ -62,17 +63,26 @@ interface ApiService {
     // --- CARRITO ---
 
     @GET("api/v1/carrito")
-    suspend fun getCarrito(): CarritoDTO
+    suspend fun getCarrito(        @Header("Authorization") token: String
+    ): CarritoDTO
 
     @POST("api/v1/carrito/agregar")
-    suspend fun agregarItemAlCarrito(@Body itemDto: CarritoItemDetalleDTO): CarritoDTO
+    suspend fun agregarItemAlCarrito(
+        @Header("Authorization") token: String,
+        @Body itemDto: CarritoItemDetalleDTO
+    ): CarritoDTO
 
     @DELETE("api/v1/carrito/remover/{itemId}")
-    suspend fun removerItemDelCarrito(@Path("itemId") itemId: Long): CarritoDTO
+    suspend fun removerItemDelCarrito(
+        @Header("Authorization") token: String,
+        @Path("itemId") itemId: Long
+    ): CarritoDTO
 
     @PUT("api/v1/carrito/actualizar/{itemId}")
     suspend fun actualizarCantidadItem(
+        @Header("Authorization") token: String,
         @Path("itemId") itemId: Long,
         @Query("nuevaCantidad") nuevaCantidad: Int
     ): CarritoDTO
+
 }
