@@ -19,7 +19,6 @@ import retrofit2.http.PUT
 interface ApiService {
 
     // --- AUTENTICACIÓN ---
-
     @POST("api/v1/auth/register")
     suspend fun registrarUsuario(@Body registroDTO: RegistroUsuarioDTO): UsuarioDTO
 
