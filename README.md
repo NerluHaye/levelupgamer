@@ -3,21 +3,26 @@
 
 # LevelUp Gamer — Control de Gastos para Gamers 🎮
 
+## 📱 Objetivo del proyecto
+
+Como equipo, nuestro objetivo es desarrollar **una aplicación móvil funcional y completa**, que refleje un proceso de diseño y una implementación bien aplicado. 
+Buscamos construir una app **modular, visualmente coherente y usable**, que integrara una **Arquitectura MVVM** robusta, **validaciones** claras, **persistencia remota** (Backend/PostgreSQL), acceso a **recursos nativos**, y la implementación de **Pruebas Unitarias** para garantizar la fiabilidad del código a largo plazo.
+
 ## 📱 Descripción
 
-Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Android**, creada en **Kotlin con Jetpack Compose**, que permite a los gamers llevar un control de sus compras y consumos dentro del mundo del gaming. La Aplicación ofrece una experiencia moderna y fluida, combinando diseño visual, validaciones, almacenamiento local y acceso a funciones nativas del dispositivo.
+Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil nativa para Android**, creada en **Kotlin con Jetpack Compose**, diseñada para la comunidad gamer para llevar un control detallado de sus compras y consumos. La aplicación ofrece una experiencia moderna y fluida, cuyo valor técnico se centra en una **Arquitectura MVVM** robusta, asegurando modularidad y mantenibilidad. Hemos implementado **persistencia remota** conectando la aplicación a un Backend (que utiliza **PostgreSQL**) para manejar la gestión de datos sensibles y la autenticación de usuarios. Finalmente, se integró una suite de **Pruebas Unitarias** que validan la lógica del negocio y la capa de datos, garantizando la confiabilidad del sistema ante fallos.
 
 ## 📱 Colaboradores 
 
-- **Alexander Bello** – Logica de validacion, navegación y Backend.  
-- **Nicolás Jerez** – Diseño visual , gestión de estado y recursos nativos.  
-- **Abraham Neira** – estructura modular (MVVM), monitoreo y Pruebas unitarias.
+- **Alexander Bello** – Logica de validación, manejo de navegación y desarrollo de Backend.  
+- **Nicolás Jerez** – Diseño visual , gestión de estado y desarrollo de Recursos nativos.  
+- **Abraham Neira** – Estructura modular (MVVM), monitoreo de la aplicacion y desarrollo de Pruebas unitarias.
 
 ## 📱 Funcionalidades del proyecto
 
 ### Interfaz y Navegación:
-- **Pantalla principal** con acceso a las funciones principales.  
-- **Formulario validado** para agregar gastos con retroalimentación visual (íconos y mensajes de error).  
+- **Pantalla principal:** Con acceso a las funciones principales.  
+- **Formulario validado:** Para agregar gastos con retroalimentación visual (íconos y mensajes de error).  
 
 ### Validaciones:
 - Validaciones lógicas manejadas desde `ViewModel`, separadas de la UI.
@@ -36,12 +41,17 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 - **Lector de archivo** integrado para la comprobante de la compra pdf.
 - **Gps** Para confirmar el lugar donde se debe enviar las compras.
 
+### Pruebas unitarias: 
+- **Cobertura de Capas:** Suite de **4 pruebas** implementadas en la Capa de Datos (`ProductRepository`) y la Capa de Lógica (`LoginViewModel`, `RegisterViewModel`, `ProductViewModel`).
+- **Enfoque de Validación:** Las pruebas se centran en validar la **robustez** (manejo de fallos de red en el Repository), la **seguridad** (validación de entradas antes del registro) y la correcta **gestión de estados** de la UI.
+- **Herramientas:** Se utilizan **JUnit**, **Mockito-Kotlin** para simular dependencias de la API, y **Kotlin Coroutines Test** para probar la lógica asíncrona.
+
 ## 📱 Estructura 
 
 ### Etapa 1 Planificación:
 - Configuración inicial del proyecto en **Android Studio**.
-- Creación del **tablero Trello** con planificación por semanas. 
-- Creación del **repositorio GitHub** con commits iniciales y archivo README.md.
+- Creación del **Tablero Trello** con planificación por semanas. 
+- Creación del **Repositorio GitHub** con commits iniciales y archivo README.md.
 
 ### Etapa 2 Diseño de Interfaz y Navegación:
 - Creación de pantallas principales: `CartScreen.kt`, `ProductDetailScreen.kt`, `ProductListScreen.kt`.
@@ -53,8 +63,9 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 
 ### Etapa 4 Persistencia Local y Arquitectura:
 - Implementación del patrón **MVVM** para mantener la aplicación modular y mantenible.  
-- Creación del `ProductRepository.kt` para manejar la comunicación entre ViewModel y base de datos.  
-- Organización clara de carpetas (`data`, `model`, `repository`, `viewmodel`, `ui`, `util`).  
+- Creación del `ProductRepository.kt` para manejar la comunicación entre ViewModel y base de datos.
+- Integración de **Pruebas Unitarias:** Desarrollo de la suite de pruebas para el `ProductRepository` y los `ViewModels` (Login, Register, Product).
+- Organización clara de carpetas (`data`, `model`, `repository`, `viewmodel`, `ui`, `util`) y para las pruebas (`test/repository/`, `test/viewmodel/`).  
 - Seguimiento colaborativo en **GitHub y Trello**.
 
 ### Etapa 5 Recursos Nativos y Animaciones:
@@ -64,15 +75,11 @@ Nuestro proyecto consiste en el desarrollo de una **Aplicación móvil para Andr
 ### Etapa 6 Integracion de Backend y Base de datos:
 - Conexion entre la app mobile y el backend que esta conectando con una base de datos 
 - Comunicacion entre la base de datos para la validacion de productos y usuarios
+  
 ### Etapa 7 Creacion del apk y firma 
 - Finalizacion del proyecto, convirtiendolo en un apk y dando la firma de keystore
 
 <img width="687" height="486" alt="Captura de pantalla 2025-11-17 052419" src="https://github.com/user-attachments/assets/33c8ff45-e0fd-4445-94be-0cd2664ad507" />
-
-## 📱 Objetivo del proyecto
-
-Como equipo, nuestro objetivo es desarrollar **una aplicación móvil funcional y completa**, que refleje un proceso de diseño y una implementación bien aplicado. 
-Buscamos construir una app **modular, visualmente coherente y usable**, que integre diseño visual, validaciones, persistencia local, animaciones y acceso a recursos nativos.
 
 ## 📱 Pasos para Ejecutar el Proyecto
 
