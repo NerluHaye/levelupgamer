@@ -4,7 +4,6 @@ import android.util.Log
 import com.example.levelupgamer.data.remote.ApiService
 import com.example.levelupgamer.model.Product
 
-// Quitamos 'open' porque ya no es necesario
 class ProductRepository(private val apiService: ApiService) {
     suspend fun getProducts(): List<Product> {
         return try {

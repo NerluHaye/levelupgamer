@@ -55,11 +55,11 @@ class RegisterViewModelTest {
         val password = "password"
         val fechaNacimiento = "2000-01-01"
         val codigoReferido = "1234"
-        val registroDTO = RegistroUsuarioDTO(nombre, email, password, fechaNacimiento, codigoReferido)
+        val registroDTO = RegistroUsuarioDTO(nombre, email, password, fechaNacimiento)
         val user = UsuarioDTO(id = 1, nombre = nombre, email = email, tieneDescuentoDuoc = true, puntosLevelUp = 0, rol = "USER")
         whenever(repository.register(registroDTO)).thenReturn(user)
 
-        viewModel.register(nombre, email, password, fechaNacimiento, codigoReferido)
+        viewModel.register(nombre, email, password, fechaNacimiento)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val registerState = viewModel.registerState.value
@@ -78,7 +78,7 @@ class RegisterViewModelTest {
         val errorMessage = "Error en el registro. Inténtalo de nuevo."
         whenever(repository.register(any())).thenThrow(RuntimeException())
 
-        viewModel.register(nombre, email, password, fechaNacimiento, codigoReferido)
+        viewModel.register(nombre, email, password, fechaNacimiento)
         testDispatcher.scheduler.advanceUntilIdle()
 
         val registerState = viewModel.registerState.value
@@ -89,7 +89,7 @@ class RegisterViewModelTest {
     @Test
     fun `register with blank name - sets error state`() = runTest {
 
-        viewModel.register("", "email@test.com", "password", "2000-01-01", null)
+        viewModel.register("", "email@test.com", "password", "2000-01-01")
 
         val registerState = viewModel.registerState.value
         assertTrue(registerState is Result.Error)
@@ -100,7 +100,7 @@ class RegisterViewModelTest {
     @Test
     fun `register with blank email - sets error state`() = runTest {
 
-        viewModel.register("name", "", "password", "2000-01-01", null)
+        viewModel.register("name", "", "password", "2000-01-01")
 
         val registerState = viewModel.registerState.value
         assertTrue(registerState is Result.Error)
