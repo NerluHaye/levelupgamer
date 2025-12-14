@@ -6,9 +6,6 @@ import com.example.levelupgamer.model.Product
 
 // Quitamos 'open' porque ya no es necesario
 class ProductRepository(private val apiService: ApiService) {
-
-    // --- SE HA ELIMINADO TODA LA LÓGICA DEL CARRITO LOCAL ---
-
     suspend fun getProducts(): List<Product> {
         return try {
             val dtoList = apiService.getAllProductos()

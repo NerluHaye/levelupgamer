@@ -48,18 +48,4 @@ class BlogViewModel(private val repository: BlogRepository) : ViewModel() {
             }
         }
     }
-
-    fun createBlog(blog: Blog, onResult: (Blog?) -> Unit) {
-        viewModelScope.launch {
-            try {
-                val newBlog = repository.createBlog(blog)
-                if (newBlog != null) {
-                    _blogs.value = _blogs.value + newBlog
-                }
-                onResult(newBlog)
-            } catch (e: Exception) {
-                onResult(null)
-            }
-        }
-    }
 }

@@ -23,11 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.levelupgamer.data.remote.RetrofitClient
-import com.example.levelupgamer.data.remote.model.RegistroUsuarioDTO
 import com.example.levelupgamer.data.repository.AuthRepository
 import com.example.levelupgamer.data.repository.BlogRepository
 import com.example.levelupgamer.data.repository.CarritoRepository
 import com.example.levelupgamer.data.repository.ProductRepository
+import com.example.levelupgamer.data.repository.ComentarioRepository
 import com.example.levelupgamer.ui.*
 import com.example.levelupgamer.ui.theme.LevelUpGamerTheme
 import com.example.levelupgamer.viewmodel.BlogCreationViewModel
@@ -43,6 +43,8 @@ import kotlinx.coroutines.launch
 import com.example.levelupgamer.viewmodel.CartViewModel
 import com.example.levelupgamer.viewmodel.CartViewModelFactory
 import com.example.levelupgamer.viewmodel.ProductViewModelFactory
+import com.example.levelupgamer.viewmodel.ComentarioViewModel
+import com.example.levelupgamer.viewmodel.ComentarioViewModelFactory
 
 sealed class Screen {
     object List : Screen()
@@ -65,11 +67,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LevelUpGamerTheme(darkTheme = true) {
+            LevelUpGamerTheme {
                 val apiService = RetrofitClient.apiService
                 val productRepository = remember { ProductRepository(apiService) }
                 val authRepository = remember { AuthRepository(apiService) }
                 val blogRepository = remember { BlogRepository(apiService) }
+                val comentarioRepository = remember { ComentarioRepository(apiService) }
+                
                 val blogViewModel : BlogViewModel = viewModel(factory = BlogViewModelFactory(
                     blogRepository
                 )
@@ -87,14 +91,14 @@ class MainActivity : ComponentActivity() {
                 val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory(authRepository))
                 val cartViewModel: CartViewModel = viewModel(factory = CartViewModelFactory(carritoRepository))
                 val registerViewModel: RegisterViewModel = viewModel(factory = RegisterViewModelFactory(authRepository))
+                val comentarioViewModel: ComentarioViewModel = viewModel(factory = ComentarioViewModelFactory(comentarioRepository))
 
                 var screen by remember { mutableStateOf<Screen>(Screen.List) }
                 val user by loginViewModel.user.collectAsState()
                 val isLoggedIn = user != null
                 val blogCreationViewModel: BlogCreationViewModel = viewModel(
                     factory = BlogCreationViewModelFactory(
-                        blogRepository,
-                        user?.nombre ?: "Anónimo"
+                        blogRepository
                     )
                 )
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -161,27 +165,19 @@ class MainActivity : ComponentActivity() {
                         Box(modifier = Modifier.padding(innerPadding)) {
                             when (val currentScreen = screen) {
                                 is Screen.List -> ProductListScreen(productViewModel = productViewModel, cartViewModel = cartViewModel, onOpenDetail = { productId -> screen = Screen.Detail(productId) }, onOpenCart = { screen = Screen.Cart })
-                                is Screen.Detail -> ProductDetailScreen(productId = currentScreen.productId, productViewModel = productViewModel, cartViewModel = cartViewModel, onBack = { screen = Screen.List }, onOpenCart = { screen = Screen.Cart })
+                                is Screen.Detail -> ProductDetailScreen(productId = currentScreen.productId, productViewModel = productViewModel, cartViewModel = cartViewModel, comentarioViewModel = comentarioViewModel, loginViewModel = loginViewModel, onBack = { screen = Screen.List }, onOpenCart = { screen = Screen.Cart })
                                 is Screen.Cart -> CartScreen(cartViewModel = cartViewModel, onBack = { screen = Screen.List }, onProceedToPayment = { run { if (isLoggedIn) screen = Screen.Payment else Toast.makeText(this@MainActivity, "Debes iniciar sesión para pagar", Toast.LENGTH_SHORT).show() } })
-
                                 is Screen.Login -> LoginScreen(loginViewModel = loginViewModel, onLoginSuccess = { screen = Screen.List }, onRegisterClick = { screen = Screen.Register })
                                 is Screen.Register -> RegisterScreen(registerViewModel = registerViewModel, onRegisterSuccess = { screen = Screen.Login }, onLoginClick = { screen = Screen.Login })
-
-                                is Screen.Payment -> {
-                                    val cartItems by cartViewModel.cartItems.collectAsState()
-                                    val subtotal by cartViewModel.totalPrice.collectAsState()
+                                is Screen.Payment -> { val cartItems = cartViewModel.cartItems.collectAsState().value
+                                    val subtotal = cartItems.sumOf { it.product.precio * it.cantidad }.toDouble()
                                     val tieneDescuento = user?.tieneDescuentoDuoc ?: false
-                                    val totalFinal = if (tieneDescuento) subtotal * 0.80 else subtotal
-                                    PaymentScreen(
-                                        cartItems = cartItems,
-                                        totalAmount = totalFinal,
-                                        onPaymentSuccess1 = if (tieneDescuento) "20% de descuento a usuarios DUOC" else "sin descuentos aplicables",
-                                        onBack = { screen = Screen.Cart },
-                                        onPaymentSuccess = {
-                                            cartViewModel.clearCart()
-                                            screen = Screen.PaymentSuccess
-                                        }
-                                    )
+                                    val totalFinal = if (tieneDescuento) {
+                                        subtotal * 0.80 // ¡Aplica el 20% de descuento!
+                                    } else {
+                                        subtotal
+                                    }
+                                    PaymentScreen(cartItems = cartItems, totalAmount = totalFinal, onPaymentSuccess1 = if (user?.tieneDescuentoDuoc == true) {"20% de descuento a usuarios DUOC"} else {"sin descuentos aplicables"}, onBack = { screen = Screen.Cart }, onPaymentSuccess = { cartViewModel.clearCart(); screen = Screen.PaymentSuccess })
                                 }
                                 is Screen.Nosotros -> NosotrosScreen(onBack = { screen = Screen.List })
                                 is Screen.Profile -> ProfileScreen(loginViewModel = loginViewModel, onBack = { screen = Screen.List }, onLogout = { loginViewModel.logout(); screen = Screen.List })
@@ -189,7 +185,17 @@ class MainActivity : ComponentActivity() {
                                 )
 
                                 is Screen.Blog -> { BlogScreen(viewModel = blogViewModel, onBlogClick = { blogId -> Toast.makeText(this@MainActivity, "Ir al detalle del blog ID: $blogId", Toast.LENGTH_SHORT).show() }, onAddBlogClick = { screen = Screen.CreateBlog }) }
-                                is Screen.CreateBlog -> { BlogCreationScreen(onBlogCreated = { blogViewModel.fetchBlogs() }, viewModel = blogCreationViewModel) }
+                                is Screen.CreateBlog -> {
+                                    BlogCreationScreen(
+                                        onBlogCreated = {
+                                            blogViewModel.fetchBlogs()
+                                            screen = Screen.Blog
+                                        },
+                                        viewModel = blogCreationViewModel,
+
+                                        loginViewModel = loginViewModel
+                                    )
+                                }
 
 
 

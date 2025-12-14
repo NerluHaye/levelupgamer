@@ -11,8 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class BlogCreationViewModel(
-    private val repository: BlogRepository,
-    private val autor: String // El nombre del usuario logueado
+    private val repository: BlogRepository
 ) : ViewModel() {
 
     private val _isLoading = MutableStateFlow(false)
@@ -21,7 +20,7 @@ class BlogCreationViewModel(
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> get() = _error
 
-    fun createBlog(titulo: String, contenido: String, onSuccess: () -> Unit) {
+    fun createBlog(token: String, titulo: String, contenido: String, onSuccess: () -> Unit) {
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
@@ -32,20 +31,21 @@ class BlogCreationViewModel(
                 id = null,
                 titulo = titulo,
                 contenido = contenido,
-                autor = autor,
+                autor = "",
                 fechaPublicacion = currentDate,
                 enabled = true
             )
 
             try {
-                val createdBlog = repository.createBlog(newBlog)
+                val createdBlog = repository.createBlog(token, newBlog)
+
                 if (createdBlog != null) {
-                    onSuccess() // ¡Éxito! Avisamos a la UI para que navegue.
+                    onSuccess()
                 } else {
-                    _error.value = "No se pudo crear el blog. Inténtalo de nuevo."
+                    _error.value = "No se pudo crear el blog."
                 }
             } catch (e: Exception) {
-                _error.value = "Error de red: ${e.message}"
+                _error.value = "Error: ${e.message}"
             } finally {
                 _isLoading.value = false
             }

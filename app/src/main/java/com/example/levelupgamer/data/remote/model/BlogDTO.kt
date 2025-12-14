@@ -5,6 +5,6 @@ data class BlogDTO(
     val titulo: String,
     val contenido: String,
     val autor: String,
-    val fechaPublicacion: String,
+    val fechaPublicacion: String? = null,
     val enabled: Boolean
 )

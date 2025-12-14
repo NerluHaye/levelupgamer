@@ -3,23 +3,25 @@ package com.example.levelupgamer.ui
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+// Importa tu LoginViewModel
+import com.example.levelupgamer.viewmodel.LoginViewModel
+import com.example.levelupgamer.viewmodel.BlogCreationViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.semantics.error
 import androidx.compose.ui.unit.dp
-import com.example.levelupgamer.viewmodel.BlogCreationViewModel
 
 @Composable
 fun BlogCreationScreen(
     onBlogCreated: () -> Unit,
-    viewModel: BlogCreationViewModel
+    viewModel: BlogCreationViewModel,
+    loginViewModel: LoginViewModel
 ) {
     var titulo by remember { mutableStateOf("") }
     var contenido by remember { mutableStateOf("") }
+    val userDTO by loginViewModel.user.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
+    val token = userDTO?.token ?: ""
 
     Column(
         modifier = Modifier
@@ -53,14 +55,17 @@ fun BlogCreationScreen(
         } else {
             Button(
                 onClick = {
-                    viewModel.createBlog(
-                        titulo = titulo,
-                        contenido = contenido,
-                        onSuccess = onBlogCreated
-                    )
+                    if (token.isNotEmpty()) {
+                        viewModel.createBlog(
+                            token = token,
+                            titulo = titulo,
+                            contenido = contenido,
+                            onSuccess = onBlogCreated
+                        )
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = titulo.isNotBlank() && contenido.isNotBlank()
+                enabled = titulo.isNotBlank() && contenido.isNotBlank() && token.isNotEmpty()
             ) {
                 Text("Guardar Blog")
             }
@@ -72,5 +77,3 @@ fun BlogCreationScreen(
         }
     }
 }
-
-
