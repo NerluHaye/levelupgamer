@@ -13,15 +13,14 @@ class ProductRepository(private val apiService: ApiService) {
                 Product(
                     id = dto.id,
                     nombre = dto.nombre,
-                    precio = dto.precio.toDouble(),
+                    precio = dto.precio,
                     nombreCategoria = dto.nombreCategoria,
                     descripcion = dto.descripcion,
                     imagenUrl = dto.imagenUrl
                 )
             }
         } catch (e: Exception) {
-            Log.e("ProductRepository", "ERROR FETCHING PRODUCTS: ", e)
-            emptyList()
+            throw e
         }
     }
 

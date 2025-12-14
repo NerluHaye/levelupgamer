@@ -7,7 +7,7 @@ data class ProductoDTO(
     val codigo: String,
     val nombre: String,
     val descripcion: String,
-    val precio: BigDecimal,
+    val precio: Double,
     val stock: Int,
     val nombreCategoria: String,
     val imagenUrl: String
