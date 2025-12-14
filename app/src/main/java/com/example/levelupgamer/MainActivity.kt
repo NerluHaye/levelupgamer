@@ -113,7 +113,7 @@ class MainActivity : ComponentActivity() {
                             //Iniciar sesion
                             NavigationDrawerItem(
                                 label = {
-                                    Text(if (isLoggedIn) "User: ${user?.nombre}\nEmail: ${user?.email}" else "Iniciar Sesión")
+                                    Text(if (isLoggedIn) "User: ${user?.nombre ?: "Sin nombre"}\nEmail: ${user?.email ?: "Sin email"}" else "Iniciar Sesión")
                                 },
                                 icon = {
                                     Icon(Icons.Default.AccountCircle, contentDescription = "Usuario")

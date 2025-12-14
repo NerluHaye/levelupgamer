@@ -92,7 +92,7 @@ fun ProfileScreen(
                                 color = Color.Gray
                             )
                             Text(
-                                text = currentUser.nombre,
+                                text = currentUser.nombre ?: "Sin nombre",
                                 style = MaterialTheme.typography.titleLarge,
                                 color = Color.White
                             )
@@ -105,7 +105,7 @@ fun ProfileScreen(
                                 color = Color.Gray
                             )
                             Text(
-                                text = currentUser.email,
+                                text = currentUser.email ?: "Sin email",
                                 style = MaterialTheme.typography.titleLarge,
                                 color = Color.White
                             )
